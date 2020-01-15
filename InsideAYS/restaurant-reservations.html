@@ -1,0 +1,260 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('restourant', ['ngResource']).controller("RestourantCtrl",
+          function ($scope, $resource, $timeout) {
+              $scope.Restourant = {
+                  additionInfo: 'Test info', roomNo: '1', lastName: 'Bob', smoking: '', nameForReserve: '', persons: 1, restValue: '', mealValue: '',
+                  restorantList: restorantList = [                   
+                  ],
+
+                  mealTimeList: mealTimeList = [
+                    { name: 'Breakfast', value: 'breakfast' },
+                    { name: 'Lunch', value: 'lunch' },
+                    { name: 'Dinner', value: 'dinner' }
+                  ]
+
+              };
+              $scope.radioWarningClass = "icon __radio";
+              $scope.nameForReserveClass = "text-field";
+              $scope.limitClass = 'symbols-limit';
+              $scope.maxsymbolsClass = "max-symbols";
+              angular.element(document.getElementById('errorsMsg')).css('display', 'none');             
+              angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+              $scope.showSmoking = false;
+              $scope.isErrorInLength = false;
+
+              $resource('http://hotels.modera.co/api/catalogs/:request_type/restaurants', { request_type: 'inside' }).get(null, function (u, getResponseHeaders) {
+                  // alert(u);
+                  $scope.Restourant.restorantList = u.restaurants;
+                  $scope.Restourant.restValue = $scope.Restourant.restorantList[0].id;
+                  $timeout(function () {
+                      //if ($scope.BookMeeting.conferenceList.length > 0) {
+                      $("#ddlRestourantList").coreUISelect();
+                      //promise.cancel();
+                      //}                     
+                  }, 1, false);
+              });
+             
+              $scope.Restourant.mealValue = $scope.Restourant.mealTimeList[0].value;
+
+              $scope.validate = function (validateItem) {
+                  if (angular.isDefined(validateItem)) {
+                      if (validateItem.length >= 180) {
+                          $scope.limitClass = 'symbols-limit __warning';
+                          $scope.maxsymbolsClass = "max-symbols __warning";
+                          $scope.isErrorInLength = true;
+                      }
+                      else {
+                          $scope.limitClass = 'symbols-limit';
+                          $scope.maxsymbolsClass = "max-symbols";
+                          $scope.isErrorInLength = false;
+                      }
+                  }
+              }
+
+              $scope.changeRadio=function()
+              {
+                  if ($scope.radioWarningClass == "icon __radio __warning") {
+                      $scope.radioWarningClass = "icon __radio";
+                      $scope.showSmoking = false;
+                  }
+              }
+
+              $scope.sendRequest = function () {
+                  $scope.Restourant;
+
+                  if ($scope.maxsymbolsClass == "max-symbols __warning")
+                      return;
+                  
+                  if ($scope.restourantReserveForm.nameForReserve.$invalid)                  
+                      $scope.nameForReserveClass = "text-field __warning";
+                  
+                  if ($scope.restourantReserveForm.smokingYes.$invalid && $scope.restourantReserveForm.smokingNo.$invalid) {
+                      $scope.radioWarningClass = "icon __radio __warning";
+                      $scope.showSmoking = true;
+                  }
+                  
+                  if (!$scope.restourantReserveForm.nameForReserve.$invalid && !$scope.restourantReserveForm.smokingYes.$invalid
+                      && !$scope.restourantReserveForm.smokingNo.$invalid) {
+
+                      //$scope.Restourant = {
+                      //    additionInfo: 'Test info', roomNo: '1', lastName: 'Bob', smoking: '', nameForReserve: '', persons: 1, restValue: '', mealValue: '',
+                      //    restorantList: restorantList = [                   
+                      //    ],
+
+                      //    mealTimeList: mealTimeList = [
+                      //      { name: 'Breakfast', value: 'breakfast' },
+                      //      { name: 'Lunch', value: 'lunch' },
+                      //      { name: 'Dinner', value: 'dinner' }
+                      //    ]
+
+                      //};
+
+                      var postData = {
+                          request_type: "inside",
+                          request: {
+                              request_form: "restourant_reservation",
+                              room_number: "",
+                              last_name: "",
+                              send_date: "",
+                              request_body: {
+                                  name_for_reservation: "",
+                                  persons: 1,
+                                  additional_information: "",                                                         
+                                  restourant: "",
+                                  mealTime: "",
+                                  smoking_preference:""
+                              }
+                          }
+                      }
+
+                      postData.request.room_number = $scope.Restourant.roomNo;
+                      postData.request.last_name = $scope.Restourant.lastName;        
+                      postData.request.request_body.name_for_reservation = $scope.Restourant.nameForReserve;
+                      postData.request.request_body.additional_information = $scope.Restourant.additionInfo;
+                      postData.request.request_body.persons = $scope.Restourant.persons;
+                      postData.request.request_body.restourant = $scope.Restourant.restValue;
+                      postData.request.request_body.mealTime = $scope.Restourant.mealValue
+                      postData.request.request_body.smoking_preference = $scope.Restourant.smoking;
+                      postData.request.send_date = Date.parse(new Date());
+
+                      $.fancybox.close();
+                      $.fancybox.open([{ type: 'ajax', href: '/InsideAYS/successMsg.html' }], {
+                          padding: 0,
+                          scrolling: 'visible'
+                      });
+                  }
+                  else
+                      angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+
+              }
+          }
+      )
+        .directive('numbersOnly', function () {
+          return {
+              restrict: 'A',
+              link: function (scope, elm, attrs, ctrl) {
+                  elm.on('keydown', function (event) {
+                      // Allow: backspace, delete, tab, escape, enter and .
+                      if ($.inArray(event.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                          // Allow: Ctrl+A
+                          (event.keyCode == 65 && event.ctrlKey === true) ||
+                          // Allow: home, end, left, right
+                          (event.keyCode >= 35 && event.keyCode <= 39)) {
+                          // let it happen, don't do anything                        
+                          return;
+                      }
+                      else {
+                          // Ensure that it is a number and stop the keypress
+                          if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                              event.preventDefault();
+                              angular.element(document.getElementById('errorInPersons')).removeAttr('style');
+                          }
+                          else {
+                              angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+                          }
+                      }
+
+                  });
+              }
+          }
+      });
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__restaurant-reservations'), ['restourant']);
+        $(".select-controller").coreUISelect();
+      
+    });
+    //@ sourceURL=restourantReserveInside.js
+</script>
+
+<div class="ui-popup __style-2" id="popup__restaurant-reservations" ng-controller="RestourantCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__restaurant-reservations-ic">Restaurant Reservations</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="restourantReserveForm" novalidate class="css-form">
+                <div class="form_inner">
+                    <div class="form_column __left">
+                        <div class="field">
+                            <div class="field_label">Choose one of our restaurants:</div>
+                            <div class="field_content">
+                                <div class="field-select">
+                                    <select name="" id="ddlRestourantList" ng-options="option.id as option.name for option in Restourant.restorantList" ng-model="Restourant.restValue"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">Mealtime:</div>
+                            <div class="field_content">
+                                <div class="field-select">
+                                    <select name="" class="select-controller" ng-model="Restourant.mealValue" ng-options="option.value as option.name for option in Restourant.mealTimeList"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_content">
+                                <div class="fields_title __style-2">Smoking<br>Preference:</div>
+                                <div class="radio-inline">
+                                    <div class="field-radio">
+                                        <input type="radio" name="smokingYes" id="smoking-yes-rr" ng-change="changeRadio()" ng-model="Restourant.smoking" value="yes" required>
+                                        <label for="smoking-yes-rr"><span ng-class="radioWarningClass"></span>Yes</label>
+                                    </div>
+                                    <div class="field-radio __last">
+                                        <input type="radio" name="smokingNo" id="smoking-no-rr" ng-change="changeRadio()"  ng-model="Restourant.smoking" value="no" required>
+                                        <label for="smoking-no-rr"><span ng-class="radioWarningClass"></span>No</label>
+                                    </div>
+                                </div>
+                                 <span class="warning-info" ng-show="showSmoking" >Choose smoking preference</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_content">
+                                <div class="field-simple-inline">
+                                    <label for="">Persons:</label>
+                                    <input type="text" class="text-field __width-S __aligner" value="1" numbers-only ng-model="Restourant.persons" required>
+                                    <span class="warning-info" id="errorInPersons" >*Only integer</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_column __right">
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Name for reservation:</label>
+                            </div>
+                            <div class="field_content">
+                                <input type="text" ng-class="nameForReserveClass" value="" placeholder="John Doe" name="nameForReserve" ng-model="Restourant.nameForReserve" required>
+                            </div>            
+                        </div>
+                        <div class="field">
+                            <div class="field_label">
+                               <label for="">Additional Information:</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                            </div>
+                            <div class="field_content">
+                                <input type="text" class="text-field __limit" placeholder="" maxlength="180" ng-model="Restourant.additionInfo" ng-change="validate(Restourant.additionInfo)">
+                                 <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Your information:</label>
+                            </div>
+                            <div class="field_content __style-1">
+                                <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="Restourant.roomNo">
+                                <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="Restourant.lastName">
+                                 <span class="warning-info" id="errorsMsg" ng-show="restourantReserveForm.smokingYes.$invalid || restourantReserveForm.smokingNo.$invalid
+                                  || restourantReserveForm.nameForReserve.$invalid">*Fields required to fill</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

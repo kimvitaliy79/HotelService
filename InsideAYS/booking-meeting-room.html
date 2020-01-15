@@ -1,0 +1,401 @@
+<script src="/javascript/angular-resource.js"></script>
+<!--<script src="/javascript/angular-route.js"></script>-->
+
+<script type="text/javascript">
+
+    angular.module('bookMeeting', ['ngResource']).controller("BookMeetingCtrl",
+          function ($scope, $resource, $timeout) {
+
+              $scope.BookMeeting = {
+                  additionInfo: 'Test info', roomNo: '1', lastName: 'Bob', coffeeBreak: '', personsForCoffee: 1, persons: 1, conferenceValue: '', roomSetupValue: '', date: '', time: '',
+
+                  conferenceList: conferenceList = [                      
+                    //{ name: 'Khirdalan', id: 11 },
+                    //{ name: 'Lockbatan', id: 21 },
+                    //{ name: 'Amirjan', id: 31 }
+                  ],
+
+                  roomSetupList: roomSetupList = [
+                    //{ name: 'U-shape', value: 'u-shape' },
+                    //{ name: 'Boardroom', value: 'boardroom' },
+                    //{ name: 'Theater style', value: 'theaterStyle' }
+                  ]
+              };
+           
+              //$scope.BookMeeting.conferenceValue = null;
+              //$scope.BookMeeting.roomSetupValue = null;            
+
+                         
+              $resource('http://hotels.modera.co/api/catalogs/:request_type/conference_rooms', { request_type: 'inside' }).get(null, function (u, getResponseHeaders) {
+                  // alert(u);
+                  $scope.BookMeeting.conferenceList = u.conference_rooms;                  
+                  $scope.BookMeeting.conferenceValue = $scope.BookMeeting.conferenceList[0].id;
+                  $timeout(function () {
+                      //if ($scope.BookMeeting.conferenceList.length > 0) {
+                      $("#ddlConferenceList").coreUISelect();
+                          //promise.cancel();
+                      //}                     
+                  }, 1, false);
+              });
+                  
+
+              $resource('http://hotels.modera.co/api/catalogs/:request_type/conference_room_details', { request_type: 'inside' }).get(null, function (u, getResponseHeaders) {
+                  // alert(u);
+                  $scope.BookMeeting.roomSetupList = u.conference_room_details;
+                  $scope.BookMeeting.roomSetupValue = $scope.BookMeeting.roomSetupList[0].id;
+                  $timeout(function () {
+                      //if ($scope.BookMeeting.conferenceList.length > 0) {
+                      $("#ddlRoomList").coreUISelect();
+                      //promise.cancel();
+                      //}                     
+                  }, 1, false);
+              });
+
+
+              //$scope.BookMeeting.roomSetupValue = $scope.BookMeeting.roomSetupList[0].value;
+
+              //function ApplyCoreUI()
+              //{
+              //    // $(".select-controller").coreUISelect();
+              //    //$("#tb1").coreUISelect('update');
+              //  var promise= $timeout(function () {
+              //        if ($scope.BookMeeting.conferenceList.length > 0) {
+              //            $(".select-controller").coreUISelect();
+              //            //promise.cancel();
+              //        }
+              //        else {
+              //            alert("test");
+              //            ApplyCoreUI()
+              //        }
+              //    }, 100, false);
+              //}
+             
+
+              var d = new Date();
+              var weekDay = d.getDay();
+              var month = d.getMonth();
+              var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+              var weekArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+              var day = d.getDate();
+              $scope.BookMeeting.date = weekArray[weekDay] + " " + monthArray[month] + " " + day;
+
+              var hh = d.getHours();
+              var m = d.getMinutes();
+              var dd = "AM";
+              var h = hh;
+              if (h >= 12) {
+                  h = hh - 12;
+                  dd = "PM";
+              }
+              if (h == 0) {
+                  h = 12;
+              }
+              $scope.BookMeeting.time = h + ":" + m + " " + dd;
+
+
+              $scope.radioWarningClass = "icon __radio";
+              $scope.limitClass = 'symbols-limit';
+              $scope.maxsymbolsClass = "max-symbols";
+              angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+              angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+              angular.element(document.getElementById('errorInPersonsForCoffe')).css('display', 'none');
+              $scope.showCoffeBreak = false;
+              $scope.isErrorInLength = false;
+
+              $scope.PlusDate = function (input) {
+                  var arrayDates = $scope.BookMeeting.date.split(" ");
+                  var date = parseInt(arrayDates[2]) + 1;
+                  $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+              }
+
+              $scope.MinusDate = function () {
+                  var arrayDates = $scope.BookMeeting.date.split(" ");
+                  var date = parseInt(arrayDates[2]) - 1;
+                  $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+              }
+
+              $scope.PlusTime = function () {
+
+                  var arrayTime = $scope.BookMeeting.time.split(":");
+                  var hours = parseInt(arrayTime[0]) + 1;
+                  var amPM = arrayTime[1].split(" ")[1];
+
+                  if (hours >= 12) {
+                      hours = hours - 12;
+
+                      if (amPM == 'pm')
+                          amPM = "am";
+                      else
+                          amPM = "pm";
+                  }
+
+                  var minutes = arrayTime[1].split(" ")[0];
+                  $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+              }
+
+              $scope.MinusTime = function () {
+                  var arrayTime = $scope.BookMeeting.time.split(":");
+                  var hours = parseInt(arrayTime[0]) - 1;
+                  var amPM = arrayTime[1].split(" ")[1];
+
+                  if (hours == -1) {
+                      hours = "11";
+                      if (amPM == 'pm')
+                          amPM = "am";
+                      else
+                          amPM = "pm";
+                  }
+
+                  var minutes = arrayTime[1].split(" ")[0];
+                  $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+              }
+
+              $scope.validate = function (validateItem) {
+                  if (angular.isDefined(validateItem)) {
+                      if (validateItem.length >= 180) {
+                          $scope.limitClass = 'symbols-limit __warning';
+                          $scope.maxsymbolsClass = "max-symbols __warning";
+                          $scope.isErrorInLength = true;
+                      }
+                      else {
+                          $scope.limitClass = 'symbols-limit';
+                          $scope.maxsymbolsClass = "max-symbols";
+                          $scope.isErrorInLength = false;
+                      }
+                  }
+              }
+
+              $scope.changeRadio = function () {
+                  if ($scope.radioWarningClass == "icon __radio __warning") {
+                      $scope.radioWarningClass = "icon __radio";
+                      $scope.showCoffeBreak = false;
+                  }
+              }
+
+              $scope.sendRequest = function () {                                
+
+                  if ($scope.maxsymbolsClass == "max-symbols __warning")
+                      return;
+
+                  //if ($scope.bookMeetingForm.nameForReserve.$invalid)
+                  //    $scope.nameForReserveClass = "text-field __warning";
+
+                  if ($scope.bookMeetingForm.coffeeYes.$invalid && $scope.bookMeetingForm.coffeeNo.$invalid) {
+                      $scope.radioWarningClass = "icon __radio __warning";
+                      $scope.showCoffeBreak = true;
+                  }
+
+                  if (!$scope.bookMeetingForm.coffeeYes.$invalid && !$scope.bookMeetingForm.coffeeNo.$invalid
+                      && !$scope.bookMeetingForm.personsForCoffe.$invalid && !$scope.bookMeetingForm.persons.$invalid) {
+
+                      //$scope.BookMeeting = {
+                      //    additionInfo: 'Test info', roomNo: '1', lastName: 'Bob', coffeeBreak: '', personsForCoffee: 1, persons: 1, conferenceValue: '', roomSetupValue: '', date: '', time: '',
+
+                      var postData = {
+                          request_type: "inside",
+                          request: {
+                              request_form: "book_meeting_room",
+                              room_number: "",
+                              last_name: "",
+                              send_date: "",
+                              request_body: {
+                                  conference_room: "",
+                                  room_setup_details: "",
+                                  coffee_break: "",
+                                  persons: 1,
+                                  coffee_break_time: 0,
+                                  persons_qty_for_coffee_break: "",
+                                  addition_information:""
+                              }
+                          }
+                      }
+
+                      postData.request.room_number = $scope.BookMeeting.roomNo;
+                      postData.request.last_name = $scope.BookMeeting.lastName;
+                      postData.request.send_date = Date.parse(new Date());
+
+                      postData.request.request_body.conference_room = $scope.BookMeeting.conferenceValue;
+                      postData.request.request_body.room_setup_details = $scope.BookMeeting.roomSetupValue;
+                      postData.request.request_body.coffee_break = $scope.BookMeeting.coffeeBreak;
+                      postData.request.request_body.persons = $scope.BookMeeting.persons;
+                      postData.request.request_body.coffee_break_time = $scope.BookMeeting.coffeeBreak;
+                      postData.request.request_body.persons_qty_for_coffee_break = $scope.BookMeeting.personsForCoffee;
+                      postData.request.request_body.addition_information = $scope.BookMeeting.additionInfo;
+
+
+
+                      $.fancybox.close();
+                  }
+                  else {
+                      angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+                      angular.element(document.getElementById('errorInPersons')).removeAttr('style');
+                      angular.element(document.getElementById('errorInPersonsForCoffe')).removeAttr('style');
+                  }
+
+              }
+          }
+      )
+     .directive('numbersOnly', function () {
+         return {
+             restrict: 'A',
+             link: function (scope, elm, attrs, ctrl) {
+                 elm.on('keydown', function (event) {
+                     // Allow: backspace, delete, tab, escape, enter and .
+                     if ($.inArray(event.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                         // Allow: Ctrl+A
+                         (event.keyCode == 65 && event.ctrlKey === true) ||
+                         // Allow: home, end, left, right
+                         (event.keyCode >= 35 && event.keyCode <= 39)) {
+                         // let it happen, don't do anything                        
+                         return;
+                     }
+                     else {
+                         // Ensure that it is a number and stop the keypress
+                         if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                             event.preventDefault();
+                             if (event.currentTarget.name == 'persons')
+                                 angular.element(document.getElementById('errorInPersons')).removeAttr('style');
+                             else
+                                 angular.element(document.getElementById('errorInPersonsForCoffe')).removeAttr('style');
+                         }
+                         else {
+                             if (event.currentTarget.name == 'persons')
+                                 angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+                             else
+                                 angular.element(document.getElementById('errorInPersonsForCoffe')).css('display', 'none');
+                         }
+                     }
+
+                 });
+             }
+         }
+     });    
+      //.config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
+
+      //    $httpProvider.defaults.useXDomain = true;
+      //    delete $httpProvider.defaults.headers.common["X-Requested-With"];
+      //}]);
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__booking-meeting-room'), ['bookMeeting']);       
+
+        $('.time-picker').timepicker({
+            'step': 15,
+            'timeFormat': 'g:i a'
+        });
+
+        $('.date-picker').datepicker({
+            'format': 'D M d',
+            'autoclose': true
+        });
+    });
+    //@ sourceURL=bookMeetingRoomInside.js
+</script>
+
+<div class="ui-popup __style-2" id="popup__booking-meeting-room" ng-controller="BookMeetingCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__book-meeting-room-ic">Book a meeting room</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="bookMeetingForm" novalidate class="css-form">
+                <div class="form_inner">
+                    <div class="form_column __left">
+                        <div class="field">
+                            <div class="field_label __empty"></div>
+                            <div class="field_content">
+                                <div class="field-select">
+                                    <select name=""  id="ddlConferenceList" ng-options="option.id as option.name for option in BookMeeting.conferenceList" ng-model="BookMeeting.conferenceValue"></select>
+                                      </div>
+                            </div>
+                        </div> 
+                        <div class="field">
+                            <div class="field_label">Room setup details:</div>
+                            <div class="field_content">
+                                <div class="field-select">
+                                    <select name="" id="ddlRoomList" ng-options="option.id as option.name for option in BookMeeting.roomSetupList" ng-model="BookMeeting.roomSetupValue"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_content">
+                                <div class="fields_title __style-1">Coffee Break:</div>
+                                <div class="radio-inline">
+                                    <div class="field-radio">
+                                        <input type="radio" name="coffeeYes" id="coffee-yes-bmr" ng-change="changeRadio()" ng-model="BookMeeting.coffeeBreak" value="yes" required>
+                                        <label for="coffee-yes-bmr"><span ng-class="radioWarningClass"></span>Yes</label>
+                                    </div>
+                                    <div class="field-radio __last">
+                                        <input type="radio" name="coffeeNo" id="coffee-no-bmr" ng-change="changeRadio()" ng-model="BookMeeting.coffeeBreak" value="no" required>
+                                        <label for="coffee-no-bmr"><span ng-class="radioWarningClass"></span>No</label>
+                                    </div>
+                                </div>
+                                <span class="warning-info" ng-show="showCoffeBreak">Choose coffee break</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_content">
+                                <div class="field-simple-inline">
+                                    <label for="">Persons:</label>
+                                    <input type="text" class="text-field __width-S __aligner" name="persons"  numbers-only ng-model="BookMeeting.persons" required>
+                                    <span class="warning-info" id="errorInPersons" >*Only integer</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_column __right">
+                        <div class="field">
+                            <div class="field_label">Coffee Break Time:</div>
+                            <div class="field_content">
+                                <div class="fields __style-1">
+                                    <div class="icons-group __style-1">
+                                        <span class="icon __arrow __style-1" ng-click="PlusDate()"></span>
+                                        <span class="icon __arrow" ng-click="MinusDate()"></span>
+                                      </div> 
+                                    <input type="text" class="text-field __first date-picker" ng-model="BookMeeting.date">                                    
+                                    <input type="text" class="text-field time-picker" ng-model="BookMeeting.time">
+                                     <div class="icons-group">
+                                    <span class="icon __arrow __style-1" ng-click="PlusTime()" ></span>
+                                    <span class="icon __arrow" ng-click="MinusTime()"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_content">
+                                <div class="field-simple-inline __style-1">
+                                    <label for="">Persons qty for<br>Coffee Break:</label>
+                                    <input type="text" class="text-field __width-S __aligner" numbers-only name="personsForCoffe" ng-model="BookMeeting.personsForCoffee" required>
+                                    <span class="warning-info" id="errorInPersonsForCoffe" >*Only integer</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Additional Information:</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                            </div>
+                            <div class="field_content">
+                                <input type="text" class="text-field __limit" placeholder="" maxlength="180" ng-model="BookMeeting.additionInfo"  ng-change="validate(BookMeeting.additionInfo)">
+                                <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Your information:{{conferenceRooms}}</label>
+                            </div>
+                            <div class="field_content __style-1">
+                                <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="BookMeeting.roomNo">
+                                <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="BookMeeting.lastName">
+                                <span class="warning-info" id="errorsMsg" ng-show="bookMeetingForm.coffeeYes.$invalid || bookMeetingForm.coffeeNo.$invalid 
+                                    || bookMeetingForm.personsForCoffe.$invalid  || bookMeetingForm.persons.$invalid">*Fields required to fill</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

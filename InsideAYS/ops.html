@@ -1,0 +1,50 @@
+﻿<script type="text/javascript">
+
+    angular.module('errorMessage', []).controller("ErrorMsgCtrl",
+       function ($scope, $window) {        
+        
+          
+           $scope.msgText = localStorage.getItem('errorMsg');;
+
+           $scope.close = function () {
+               $.fancybox.close();
+           } 
+           
+            //function GetURLParameter(sParam)               
+            //{
+            //    var sPageURL = $window.location.search.substring(1);
+            //    var sURLVariables = sPageURL.split('&');
+            //    for (var i = 0; i < sURLVariables.length; i++)                   
+            //    {                 
+            //        var sParameterName = sURLVariables[i].split('=');
+            //            if (sParameterName[0] == sParam)
+            //        {
+            //            return sParameterName[1];
+            //        }
+            //    }                  
+            //}​
+       })
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('errorMsg'), ['errorMessage']);
+
+    });
+
+    //@ sourceURL=errorMsg.js 
+</script> 
+
+	<div class="ui-popup __style-2" id="errorMsg" ng-controller="ErrorMsgCtrl">
+	<div class="ui-popup_inner">
+		<div class="ui-popup_head">
+			<h4 class="__opps_ic">Oops...</h4>
+		</div>
+		<div class="ui-popup_body">
+            <div class="poup-message">
+                <p>{{msgText}}</p>
+            </div>
+            <div class="button-inline __alinger">
+                <button class="button __black __big" ng-click="close()">OK</button>
+            </div>
+		</div>
+	</div>
+</div>

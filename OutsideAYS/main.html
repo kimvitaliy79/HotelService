@@ -1,0 +1,260 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/javascript/jquery-1.11.0.min.js"></script>
+    <script src="/javascript/jquery.timepicker.js"></script>
+    <script src="/javascript/bootstrap-datepicker.js"></script>
+    <script src="/javascript/jquery.core-ui-select.js"></script>
+    <script src="/javascript/angular.js"></script>
+    <script type="text/javascript">
+
+        angular.module("main", []).controller("RedirectCtrl",
+            function ($scope, $window) {
+                $scope.Logo = function () {
+                    $window.open("/index.html", '_self');
+                }
+                $scope.MyRequest = function () {
+                    //var lang = $scope.selectLang;
+                    $window.open("/MyRequests/my-request.html", '_self');
+                }
+            }
+      );
+
+        //   angular.module('guestPreference', []).controller("GuestPreferenceCtrl",
+        //function ($scope) {
+        //    $scope.GuestPreference = {
+        //        roomNo: '1', lastName: 'Bob', questPreference: ''
+        //    }
+
+        //    $scope.sendRequest = function () {
+        //        $scope.GuestPreference;
+        //    }
+        //});
+
+        //   angular.module('hotelCar', []).controller("HotelCarCtrl",
+        //   function ($scope) {
+        //       $scope.HotelCar = {
+        //           roomNo: '1', lastName: 'Bob', enteredAddress: '', currentLocation: false
+        //       }
+
+        //       $scope.setLocation = function (select) {
+        //           $scope.HotelCar.currentLocation = select;
+        //       }
+
+        //       $scope.sendRequest = function () {
+        //           $scope.HotelCar;
+        //       }
+        //   });    
+
+
+
+        angular.element(document).ready(function () {
+            var myDiv2 = document.getElementById("main");
+            angular.bootstrap(myDiv2, ["main"]);
+        });
+
+    </script>
+	<title>Marriot</title>
+</head>
+
+<body>
+    <div class="page-wrap">
+        <div id="main" ng-controller="RedirectCtrl">
+            <header class="header">
+                <div class="header_inner">
+                    <h1 class="logo">
+                        <a href="" ng-click="Logo()">JW MARRIOTT.<br>Absheron<br>Baku</a>
+                    </h1>
+                    <div class="location-info">
+                        <span>
+						<big>outside</big><br>
+						the hotel
+					</span>
+                    </div>
+                    <div class="main-navigation">
+                        <ul>
+                            <li class="__active"><a href="/index.html">Make request</a></li>
+                            <li class="__last"><a href="#" ng-click="MyRequest()">My request</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page">
+                <div class="page_inner">
+                    <div class="services">
+                        <div class="services_inner __style-1">
+                            <ul class="grid">
+                                <li class="service">
+                                    <a class="popup-controller" href="/OutsideAYS/hotel-car.html">
+                                        <img src="/images/services-outside_03.png" alt="Call Taxi">
+                                        <span class="service_name">Call<br>Taxi</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/guest-preference.html">
+                                        <img src="/images/services-outside_05.png" alt="Guest Preference">
+                                        <span class="service_name">Guest<br>Preference</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/OutsideAYS/entertainment-outside.html">
+                                        <img src="/images/services-outside_09.png" alt="Entertainment">
+                                        <span class="service_name">Entertainment</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a href="/OutsideAYS/restaurant-reservations-outside.html" class="popup-controller">
+                                        <img src="/images/services-outside_10.png" alt="Restaurant Reservations">
+                                        <span class="service_name">Restaurant<br>Reservations</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--<div class="ui-popup __style-3" id="popup__guest-preference" ng-controller="GuestPreferenceCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__guest-preference_ic">Guest Preference</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#">
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">What can I do for you?</label><span class="max-symbols"><span class="symbols-limit">180</span> symbols</span>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" class="text-field __limit" placeholder="" maxlength="180" ng-model="GuestPreference.questPreference">
+                    </div>
+                </div>
+                <div class="field">
+                    <button class="button __large __white-grey">Call  At Your Service</button>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field __style-1">
+                    <div class="field_label">
+                        <label for="">Your information:</label>
+                    </div>
+                    <div class="field_content  __style-1">
+                        <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="GuestPreference.lastName">
+                        <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="GuestPreference.roomNo">
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+        <div class="ui-popup __style-3" id="popup__hotel-car" ng-controller="HotelCarCtrl">
+            <div class="ui-popup_inner">
+                <div class="ui-popup_head">
+                    <h4 class="__hotel-car_ic">Call Taxi to:</h4>
+                </div>
+                <div class="ui-popup_body">
+                    <form action="#">
+                        <div ng-switch="HotelCar.currentLocation">
+                            <div ng-switch-when="false">
+                                <div class="field">
+                                    <button class="button __large __white-grey" ng-click="setLocation(true)">Current Location</button>
+                                </div>
+                            </div>
+                            <div ng-switch-when="true">
+                                <div class="field">
+                                    <button class="button __large __white-grey __style-1" ng-click="setLocation(false)">Current Location</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Or enter Address</label>
+                            </div>
+                            <div class="field_content">
+                                <input type="text" class="text-field" ng-model="HotelCar.enteredAddress">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">Pick Up Time</div>
+                            <div class="field_content">
+                                <div class="fields __style-1">
+                                    <span class="icon __double-arrow __style-1"></span>
+                                    <input type="date" class="text-field __first date-picker" value="Sat Mar 8">
+                                    <span class="icon __double-arrow"></span>
+                                    <input type="time" class="text-field time-picker" value="09:10 am">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <button class="button __medium __white-grey __aligner">NOW</button>
+                        </div>
+                        <div class="horizontal-separator __style-1"></div>
+                        <div class="field __style-1">
+                            <div class="field_label">
+                                <label for="">Your information:</label>
+                            </div>
+                            <div class="field_content  __style-1">
+                                <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="HotelCar.roomNo">
+                                <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="HotelCar.lastName">
+                            </div>
+                        </div>
+                        <div class="button-inline __alinger">
+                            <button class="button __black __medium" ng-click="sendRequest()">Send request</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>--> 
+            
+        </div>
+
+    <footer class="footer">
+        <div class="footer_inner">
+            <div class="footer_navigation">
+                <ul>
+                    <li class="__personal">
+                        <a class="popup-controller" href="/InsideAYS/preferences.html">
+                            <span>personal Preferences</span>
+                        </a>
+                    </li>
+                    <li class="__switch">
+                        <a href="#">
+                            <span>switch to outside AYs</span>
+                        </a>
+                    </li>
+                    <li class="__emergency">
+                        <a href="javascript:void(0)">Emergency button</a>
+                        <ul class="sub-menu">
+                            <li><a class="popup-controller" href="/InsideAYS/doctor-service.html">Medical service</a></li>
+                            <li><a href="#">Call operator</a></li>
+                            <li><a href="#">Help me, i’m lost</a></li>
+                            <li><a href="/report-to-manager.html">Report to Manager on Duty</a></li>
+                            <li><a href="/report-to-manager.html">Report to General Manager</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <link rel="stylesheet" href="/Content/styles.css">
+    <link rel="stylesheet" href="/Content/core-ui-select.css">
+    <link rel="stylesheet" href="/Content/jquery.timepicker.css">
+    <link rel="stylesheet" href="/Content/jquery.scrollpane.css">
+    <link rel="stylesheet" href="/Content/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/Content/jquery.fancybox.css">
+    <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,500,700">  
+
+    <script src="/javascript/jquery.fancybox.js"></script>
+    <script src="/javascript/jquery.fancybox.pack.js"></script>  
+    <script src="/javascript/scripts.js"></script>
+</body>
+
+</html>

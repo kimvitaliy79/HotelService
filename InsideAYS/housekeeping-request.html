@@ -1,0 +1,132 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('houseKepping', ['ngResource']).controller("HouseKeppingCtrl",
+     function ($scope, $resource) {
+         $scope.HouseKepping = {
+             roomNo: '1', lastName: 'Bob', questPreference: '', IsCleanMyRoom: false
+         };
+
+         $scope.CleanMyRoom = function (select) {
+             $scope.HouseKepping.IsCleanMyRoom = select;
+         }
+
+         angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+         $scope.limitClass = 'symbols-limit';
+         $scope.maxsymbolsClass = "max-symbols";
+         $scope.guestPrefClass = "text-field __limit";
+         $scope.isErrorInLength = false;
+
+         $scope.validate = function (validateItem) {
+             if (angular.isDefined(validateItem)) {
+                 if (validateItem.length >= 180) {
+                     $scope.limitClass = 'symbols-limit __warning';
+                     $scope.maxsymbolsClass = "max-symbols __warning";
+                     $scope.isErrorInLength = true;
+                 }
+                 else {
+                     $scope.limitClass = 'symbols-limit';
+                     $scope.maxsymbolsClass = "max-symbols";
+                     $scope.isErrorInLength = false;
+                 }
+             }
+         }
+
+         $scope.sendRequest = function () {            
+
+             if (!$scope.houseKeepingForm.preference.$valid) {
+                 $scope.guestPrefClass = "text-field __limit __warning";
+             }
+             else {
+                 if ($scope.maxsymbolsClass == "max-symbols __warning")
+                     return;
+
+                 //$scope.HouseKepping = {
+                 //    roomNo: '1', lastName: 'Bob', questPreference: '', IsCleanMyRoom: false
+                 //};
+
+                 var postData = {
+                     request_type: "inside",
+                     request: {
+                         request_form: "housekeeping_request",
+                         room_number: "",
+                         last_name: "",
+                         send_date: "",
+                         request_body: {
+                             quest_preference:""
+                         }
+                     }
+                 }
+
+                 postData.request.room_number = $scope.HouseKepping.roomNo;
+                 postData.request.last_name = $scope.HouseKepping.lastName;
+                 postData.request.send_date = Date.parse(new Date());
+                 postData.request.request_body.quest_preference = $scope.HouseKepping.questPreference;
+
+                 if ($scope.HouseKepping.IsCleanMyRoom)
+                     postData.request.request_body["clean_my_room"] = "yes";
+
+
+                 $.fancybox.close();
+                 $.fancybox.open([{ type: 'ajax', href: '/InsideAYS/successMsg.html' }], {
+                     padding: 0,
+                     scrolling: 'visible'
+                 });
+             }
+
+             angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+         }
+     });
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__housekeeping-request'), ['houseKepping']);      
+    });
+    //@ sourceURL=houseKeeping.js 
+</script>
+<div class="ui-popup __style-3" id="popup__housekeeping-request" ng-controller="HouseKeppingCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__housekeeping-request_ic">Housekeeping Request</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="houseKeepingForm" novalidate class="css-form">
+                <div ng-switch="HouseKepping.IsCleanMyRoom">
+                    <div ng-switch-when="false">
+                        <div class="field">
+                            <button class="button __large __white-grey" ng-click="CleanMyRoom(true)">Clean my room</button>
+                        </div>
+                    </div>
+                    <div ng-switch-when="true">
+                        <div class="field">
+                            <button class="button __large __white-grey __style-1" ng-click="CleanMyRoom(false)">Clean my room</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">Guest Preference:</label><span class="max-symbols"><span class="symbols-limit">180</span> symbols</span>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" ng-class="guestPrefClass"" name="preference" required ng-model="HouseKepping.questPreference" placeholder="Change my bedsheets" maxlength="180" ng-change="validate(HouseKepping.questPreference)">
+                        <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field __style-1">
+                    <div class="field_label">
+                        <label for="">Your information:</label>
+                    </div>
+                    <div class="field_content  __style-1">
+                        <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="HouseKepping.roomNo">
+                        <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="HouseKepping.lastName">
+                         <span class="warning-info" id="errorsMsg" ng-show="houseKeepingForm.preference.$error.required">*Fields required to fill</span>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

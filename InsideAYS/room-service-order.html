@@ -1,0 +1,262 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('serviceOrder', ['ngResource']).controller("ServiceOrder",
+         function ($scope, $resource) {
+             $scope.Order = {
+                 additionInfo: 'Test info', roomNo: '1', lastName: 'Bob',
+                 drinks: drinks = [
+                                                   // { id: 0, name: 'Cola', price: '5 azn', selected: false },
+                                                   //{ id: 1, name: 'Pepsi', price: '5 azn', selected: false },
+                                                   //{ id: 2, name: '7 up', price: '6 azn', selected: false },
+                                                   //{ id: 3, name: 'Mirinda', price: '7 azn', selected: false },
+                                                   //{ id: 4, name: 'Water', price: '1 azn', selected: false }
+                 ],
+                 alcohols: alcohols = [
+                     //{ id: 0, name: 'Whiskey Jack Daniels', price: '5 azn', selected: false },
+                     //                              { id: 1, name: 'Whiskey Jameson', price: '5 azn', selected: false },
+                     //                              { id: 2, name: 'Vodka Grey Goose', price: '6 azn', selected: false },
+                     //                              { id: 3, name: 'Vodka Absolut', price: '7 azn', selected: false }
+                 ],
+                 foods: foods = [
+                     //{ id: 0, name: 'JW burger with French fried ', price: '15 azn', selected: false }
+                 ]    
+             };
+
+             $scope.Type = "Drinks";           
+             $scope.drinkCheckboxClass = "icon __checkbox";           
+            
+             $resource('http://hotels.modera.co/api/catalogs/meals/:meal_type', { meal_type: 'drinks' }).get(null, function (u, getResponseHeaders) {
+
+                 if ($scope.Order.drinks.length == 0) {
+                     var remain = new Array();
+                     for (var index in u.meals) {
+                         //'Completed' 'In progress' 'Pending'
+                         u.meals[index]["selected"] = false;
+                         remain.push(u.meals[index]);
+                     }
+                     $scope.Order.drinks = remain;
+                 }
+             });
+
+
+             $scope.ChangeType = function (type) {
+                 $scope.Type = type;
+
+                 if (type == 'Food') {
+                     $resource('http://hotels.modera.co/api/catalogs/meals/:meal_type', { meal_type: 'food' }).get(null, function (u, getResponseHeaders) {
+
+                         if ($scope.Order.foods.length == 0) {
+                             var remain = new Array();
+                             for (var index in u.meals) {
+                                 //'Completed' 'In progress' 'Pending'
+                                 u.meals[index]["selected"] = false;
+                                 remain.push(u.meals[index]);
+                                 if (u.meals[index].has_cooking_type)
+                                 {
+                                     u.meals[index]["fryingType"] = "medium";
+                                 }
+                             }
+                             $scope.Order.foods = remain;
+                         }
+
+                     });
+                 }
+                     if (type == 'Alcohol') {
+                         $resource('http://hotels.modera.co/api/catalogs/meals/:meal_type', { meal_type: 'alcohol' }).get(null, function (u, getResponseHeaders) {
+
+                             if ($scope.Order.alcohols.length == 0) {
+                                 var remain = new Array();
+                                 for (var index in u.meals) {
+                                     //'Completed' 'In progress' 'Pending'
+                                     u.meals[index]["selected"] = false;
+                                     remain.push(u.meals[index]);
+                                 }
+                                 $scope.Order.alcohols = remain;
+                             }
+                         });
+                     }                 
+             }
+
+             $scope.ChangeChecked = function ()
+             {
+                 if ($scope.drinkCheckboxClass == "icon __checkbox __warning")
+                 $scope.drinkCheckboxClass = "icon __checkbox";
+             }
+
+             $scope.isMeatSelected = false;
+
+             $scope.sendRequest = function () {                 
+
+                 var isOneSelected = false;
+
+                     var newDrinkArr = new Array();
+                     for (index = 0; index < $scope.Order.drinks.length; index++) {
+                         if ($scope.Order.drinks[index].selected) {
+                             isOneSelected = true;
+                             delete $scope.Order.drinks[index].selected;
+                             newDrinkArr.push($scope.Order.drinks[index]);
+                         }
+                     }
+                     if (newDrinkArr.length > 0)
+                         $scope.Order.drinks = newDrinkArr;
+               
+
+                     var newAlcoholArr = new Array();
+                     for (index = 0; index < $scope.Order.alcohols.length; index++) {
+                         if ($scope.Order.alcohols[index].selected) {
+                             isOneSelected = true;
+                             delete $scope.Order.alcohols[index].selected
+                             newAlcoholArr.push($scope.Order.alcohols[index]);
+                         }
+                     }
+                     if (newAlcoholArr.length > 0)
+                         $scope.Order.alcohols = newAlcoholArr;
+
+                 
+                     var newFoodArr = new Array();
+                     for (index = 0; index < $scope.Order.foods.length; index++) {
+                         if ($scope.Order.foods[index].selected) {
+                             isOneSelected = true;
+                             delete $scope.Order.foods[index].selected;
+                             newFoodArr.push($scope.Order.foods[index]);
+                         }
+                     }
+                     if (newFoodArr.length > 0)
+                         $scope.Order.foods = newFoodArr;
+                 
+
+                 if (!isOneSelected) {
+                     $scope.isMeatSelected = true;
+                     $scope.Type = "Drinks";
+                     $scope.drinkCheckboxClass = "icon __checkbox __warning";
+                 }
+                 else {
+                     $scope.Order;
+                     $scope.isMeatSelected = false;
+                     $.fancybox.close();
+                 }
+             }
+         }
+     );
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__room-service-order'), ['serviceOrder']);
+    });
+    //@ sourceURL=roomServiceOrder.js
+</script>
+
+
+<div class="ui-popup __style-2" id="popup__room-service-order">
+    <div class="ui-popup_inner" ng-controller="ServiceOrder">
+        <div class="ui-popup_head">
+            <h4 class="__room-service-order_ic">Room Service Order</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" novalidate class="css-form" name="roomServiceOrderForm">
+                <div class="form_inner" ng-switch="Type"  >
+                    <div class="form_column __left" ng-switch-when="Drinks">
+                        <div class="button-inline filter-items">
+                            <button class="button __medium __white-grey __active" ng-click="ChangeType('Drinks')">Drinks</button>
+                            <button class="button __medium __white-grey" ng-click="ChangeType('Food')">Food</button>
+                            <button class="button __medium __white-grey" ng-click="ChangeType('Alcohol')">Alcohol</button>
+                        </div>
+                        <ul class="items-list __active __drinks">
+                            <li class="item" ng-repeat="drink in Order.drinks">
+                                <div class="field">
+                                    <div class="field_content">
+                                        <div class="checkbox-inline __style-1">
+                                            <input type="checkbox" name="drinks" id="{{drink.id}}" ng-change="ChangeChecked()" ng-model="drink.selected">
+                                            <label for="{{drink.id}}"><span ng-class="drinkCheckboxClass"></span><span class="item_name">{{drink.name}}</span><span class="item_price">{{drink.price}} {{drink.currency.name}}</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="form_column __left" ng-switch-when="Food">
+                        <div class="button-inline filter-items">
+                            <button class="button __medium __white-grey" ng-click="ChangeType('Drinks')">Drinks</button>
+                            <button class="button __medium __white-grey __active" ng-click="ChangeType('Food')">Food</button>
+                            <button class="button __medium __white-grey" ng-click="ChangeType('Alcohol')">Alcohol</button>
+                        </div>
+                        <ul class="items-list __food __active">
+                            <li class="item" ng-repeat="food in Order.foods">
+                                <div class=" field">
+                                    <div class="field_content">
+                                        <div class="checkbox-inline __style-1">
+                                            <input type="checkbox" name="drinks" id="{{food.id}}" ng-model="food.selected">
+                                            <label for="{{food.id}}"><span class="icon __checkbox"></span><span class="item_name">{{food.name}}</span><span class="item_price">{{food.price}} {{food.currency.name}}</span></label>
+                                        </div>
+                                    </div>
+                                     <div ng-if="food.has_cooking_type">
+                                      <ul class="items-list __food __active">
+                                        <li class="item">                               
+                                            <div class="radio-inline __style-1 field">
+                                                <div class="field-radio">
+                                                    <input type="radio" id="rare{{food.id}}" ng-model="food.fryingType" value="rare">
+                                                    <label for="rare{{food.id}}"><span class="icon __radio"></span>rare</label>
+                                                </div>
+                                                <div class="field-radio">
+                                                    <input type="radio" id="medium-rare{{food.id}}" ng-model="food.fryingType" value="medium">
+                                                    <label for="medium-rare{{food.id}}"><span class="icon __radio"></span>medium</label>
+                                                </div>
+                                                <div class="field-radio __last">
+                                                    <input type="radio" id="well-done-rare{{food.id}}" ng-model="food.fryingType" value="well done">
+                                                    <label for="well-done-rare{{food.id}}"><span class="icon __radio"></span>well done</label>
+                                                </div>
+                                            </div>
+                                        </li>
+                                     </ul>     
+                                   </div>
+                                </div>
+                            </li>
+                        </ul>     
+                    </div>
+                    <div class="form_column __left" ng-switch-when="Alcohol">
+                        <div class="button-inline filter-items">
+                            <button class="button __medium __white-grey" ng-click="ChangeType('Drinks')">Drinks</button>
+                            <button class="button __medium __white-grey" ng-click="ChangeType('Food')">Food</button>
+                            <button class="button __medium __white-grey __active" ng-click="ChangeType('Alcohol')">Alcohol</button>
+                        </div>
+                        <ul class="items-list __active">
+                            <li class="item" ng-repeat="alcohol in Order.alcohols">
+                                <div class=" field">
+                                    <div class="field_content">
+                                        <div class="checkbox-inline __style-1">
+                                            <input type="checkbox" name="drinks" id="{{alcohol.id}}" ng-model="alcohol.selected">
+                                            <label for="{{alcohol.id}}"><span class="icon __checkbox"></span><span class="item_name">{{alcohol.name}}</span><span class="item_price">{{alcohol.price}} {{alcohol.currency.name}}</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="form_column __right">
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Additional Information:</label>
+                            </div>
+                            <div class="field_content">
+                                <textarea name="" id="" cols="30" rows="10" ng-model="Order.additionInfo"></textarea>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Your information:</label>
+                            </div>
+                            <div class="field_content __style-1">
+                                <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="Order.roomNo">
+                                <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="Order.lastName">
+                                <span class="warning-info" id="errorsMsg" ng-show="isMeatSelected">*Fields required to fill</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" ng-click="sendRequest()" type="button">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

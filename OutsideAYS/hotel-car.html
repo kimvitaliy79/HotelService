@@ -1,0 +1,423 @@
+<script src="/javascript/geoPosition.js"></script>
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript"> 
+
+    angular.module('callTaxi', ['ngResource']).controller("TaxiCtrl",
+       function ($scope, $resource) {
+           $scope.HotelCar = {
+               roomNo: '1', lastName: 'Bob', enteredAddress: '', currentLocation: false,
+               timeCar: '', dateCar: ''
+           }
+
+           angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+           $scope.addressClass = 'text-field';          
+
+           GetLangDateTime();
+
+           $scope.isAddressRequired = true;
+           $scope.isLocationRequired = true;
+
+
+           function show_map(position) {
+               $scope.latitude = position.coords.latitude;
+               $scope.longitude = position.coords.longitude;
+               // let's show a map or do something interesting!
+           }
+
+           function handle_error(err) {
+               if (err.code == 1) {
+                   // user said no!
+               }
+           }
+
+           function geoSuccess(p) {
+               $scope.latitude = p.coords.latitude;
+               $scope.longitude = p.coords.longitude;
+           }
+
+           function geoError(p) {
+               p.message  //: error message
+           }
+
+           $scope.setLocation = function (select) {
+               $scope.HotelCar.currentLocation = select;
+
+               if (select) {
+                   if (navigator.geolocation) {
+                       navigator.geolocation.getCurrentPosition(show_map, handle_error);
+                   } else {
+                       // no native support; maybe try a fallback?
+                       if (geoPosition.init()) {
+                           geoPosition.getCurrentPosition(geoSuccess, geoError);
+                       }
+                   }
+               }
+
+               if ($scope.HotelCar.currentLocation) {
+                   $scope.isAddressRequired = false;
+               }
+               else
+                   $scope.isAddressRequired = true;
+           }
+
+           $scope.changeAddress = function (currentObj) {
+               if ($scope.hotelCarForm.Address.$valid)
+                   $scope.isLocationRequired = false;
+               else
+                   $scope.isLocationRequired = true;
+           }
+
+           $scope.PlusDate = function (input) { 
+               var arrayDates=$scope.HotelCar.dateCar.split(" ");
+               var date = parseInt(arrayDates[2]) + 1;
+               $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+           }
+
+           $scope.MinusDate = function () {
+               var arrayDates = $scope.HotelCar.dateCar.split(" ");
+               var date = parseInt(arrayDates[2]) - 1;
+               $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+           }
+
+           $scope.PlusTime = function () {              
+
+                var arrayTime= $scope.HotelCar.timeCar.split(":");             
+                var hours = parseInt(arrayTime[0]) + 1;
+                var amPM = arrayTime[1].split(" ")[1];
+              
+                    if (hours >= 12) {
+                        hours = hours - 12;
+                      
+                        if (amPM == 'pm')
+                            amPM = "am";
+                        else
+                            amPM = "pm";
+                    }                
+                
+               var minutes=arrayTime[1].split(" ")[0];  
+               $('.time-picker').timepicker('setTime', hours +":"+minutes +" "+ amPM);
+           }
+
+           $scope.MinusTime = function () {
+               var arrayTime = $scope.HotelCar.timeCar.split(":");
+               var hours = parseInt(arrayTime[0]) - 1;
+               var amPM = arrayTime[1].split(" ")[1];
+
+               if (hours == -1)
+               {
+                   hours = "11";
+                   if (amPM == 'pm')
+                       amPM = "am";
+                   else
+                       amPM = "pm";
+               }
+
+               var minutes = arrayTime[1].split(" ")[0];
+               $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+           }
+
+           $scope.sendRequest = function () {
+               $scope.HotelCar;
+
+               if ($scope.hotelCarForm.Address) {
+                   if (!$scope.hotelCarForm.Address.$valid) {
+                       $scope.addressClass = 'text-field __warning';
+                   }
+               }
+
+               //if ($scope.HotelCar.currentLocation) {
+               //    $scope.HotelCar.enteredAddress = 'test';
+               //    $scope.hotelCarForm.Address.$invalid = false;
+               //    $scope.hotelCarForm.Address.$valid = true;
+               //}
+
+               //    //$scope.hotelCarForm.Address.$dirty = true;
+               //    //$scope.hotelCarForm.Address.$pristine = false;
+               //}
+
+               angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+
+               if (($scope.isAddressRequired && !$scope.isLocationRequired)
+                   || (!$scope.isAddressRequired && $scope.isLocationRequired)) {
+                   $.fancybox.close();
+
+                   var postData = {
+                       request_type: "outside",
+                       request: {
+                           request_form: "call_taxi",
+                           room_number: "",
+                           last_name: "",
+                           send_date: "",
+                           request_body: {
+                               pick_up_time: ""
+                           }
+                       }
+                   }
+
+                   postData.request.room_number = $scope.HotelCar.roomNo;
+                   postData.request.last_name = $scope.HotelCar.lastName;
+                   postData.request.request_body.pick_up_time = $scope.HotelCar.dateCar + " " + $scope.HotelCar.timeCar;
+                   postData.request.send_date = Date.parse(new Date());
+
+                   if ($scope.HotelCar.currentLocation) {
+                       postData.request.request_body["location_longitude"] = +$scope.longitude;
+                       postData.request.request_body["location_latitude"] = $scope.latitude;
+                   }
+                   else {
+                       postData.request.request_body["location_typed_by_user"] = $scope.HotelCar.enteredAddress;
+                   }
+
+                   $.fancybox.open([{ type: 'ajax', href: '/InsideAYS/successMsg.html' }], {
+                       padding: 0,
+                       scrolling: 'visible'
+                   });
+               }
+           }
+
+           $scope.setCurrentDateTime = function () {
+               var d = new Date();
+               var weekDay = d.getDay();
+
+               var month = d.getMonth();
+
+               var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+               var weekArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+
+               var day = d.getDate();
+               $scope.HotelCar.dateCar = weekArray[weekDay] + " " + monthArray[month] + " " + day;
+
+               var hh = d.getHours();
+               var m = d.getMinutes();
+
+               var dd = "AM";
+               var h = hh;
+
+               if (h >= 12) {
+                   h = hh - 12;
+                   dd = "PM";
+               }
+               if (h == 0) {
+                   h = 12;
+               }
+               $scope.HotelCar.timeCar = h + ":" + m + " " + dd;
+           }
+
+           function GetLangDateTime()
+           {
+                       var d = new Date();
+                       var weekDay = d.getDay();
+                       var month = d.getMonth();
+                       var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                       var weekArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+                       var day = d.getDate();
+                       $scope.HotelCar.dateCar = weekArray[weekDay] + " " + monthArray[month] + " " + day;
+
+                       var hh = d.getHours();
+                       var m = d.getMinutes();
+                       var dd = "AM";
+                       var h = hh;
+                       if (h >= 12) {
+                           h = hh - 12;
+                           dd = "PM";
+                       }
+                       if (h == 0) {
+                           h = 12;
+                       }
+                       $scope.HotelCar.timeCar = h + ":" + m + " " + dd;
+
+               //switch (currentLang) {
+               //    case 'english':
+               //        var d = new Date();
+               //        var weekDay = d.getDay();
+               //        var month = d.getMonth();
+               //        var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+               //        var weekArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+               //        var day = d.getDate();
+               //        $scope.HotelCar.dateCar = weekArray[weekDay] + " " + monthArray[month] + " " + day;
+
+               //        var hh = d.getHours();
+               //        var m = d.getMinutes();
+               //        var dd = "AM";
+               //        var h = hh;
+               //        if (h >= 12) {
+               //            h = hh - 12;
+               //            dd = "PM";
+               //        }
+               //        if (h == 0) {
+               //            h = 12;
+               //        }
+               //        $scope.HotelCar.timeCar = h + ":" + m + " " + dd;
+               //        break;
+               //    case 'russian':
+               //        var d = new Date();
+               //        var weekDay = d.getDay();
+               //        var month = d.getMonth();
+               //        var monthArray = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+               //        var weekArray = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+               //        var day = d.getDate();
+               //        $scope.HotelCar.dateCar = weekArray[weekDay] + " " + monthArray[month] + " " + day;                       
+               //        $scope.HotelCar.timeCar = d.getHours() + ":" + d.getMinutes()
+               //        break;
+               //}
+           }
+       })
+
+    .directive('numbersOnly', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, elm, attrs, ctrl) {
+                elm.on('keydown', function (event) {
+                    // Allow: backspace, delete, tab, escape, enter and .
+                    if ($.inArray(event.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                        // Allow: Ctrl+A
+                        (event.keyCode == 65 && event.ctrlKey === true) ||
+                        // Allow: home, end, left, right
+                        (event.keyCode >= 35 && event.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                    }
+                    else {
+                        // Ensure that it is a number and stop the keypress
+                        if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                            event.preventDefault();
+                        }
+                    }
+                });
+            }
+        }
+    })
+    .directive('datepicker', function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModelCtrl) {
+                $(function () {
+                    element.datepicker({
+                        dateFormat: 'D M d',
+                        onSelect: function (date) {
+                            scope.$apply(function () {
+                                ngModelCtrl.$setViewValue(date);
+                            });
+                        }
+                    });
+                });
+            }
+        }
+    });    
+
+    var currentLang;
+
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__taxi'), ['callTaxi']);
+
+        currentLang=localStorage.getItem('curLang');
+
+                 $('.time-picker').timepicker({
+                    'step': 15,
+                    'timeFormat': 'g:i a'
+                });
+
+                $('.date-picker').datepicker({
+                    'format': 'D M d',
+                    'autoclose': true
+                });
+
+        //if (currentLang == 'english') {
+        //    $('.time-picker').timepicker({
+        //        'step': 15,
+        //        'timeFormat': 'g:i a'
+        //    });
+
+        //    $('.date-picker').datepicker({
+        //        'format': 'D M d',
+        //        'autoclose': true
+        //    });
+        //}
+        //else {
+        //    $('.time-picker').timepicker({
+        //        'step': 15,
+        //        'timeFormat': 'G:i'
+        //    });
+
+        //    $('.date-picker').datepicker({
+        //        'format': 'D M d',
+        //        'autoclose': true
+        //    });
+        //}
+    });
+    
+    //@ sourceURL=callTaxi.js 
+</script> 
+
+<div class="ui-popup __style-3" id="popup__taxi" ng-controller="TaxiCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__hotel-car_ic">Call Taxi to</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="hotelCarForm" novalidate class="css-form">
+                <div ng-If="isLocationRequired">
+                    <div ng-switch="HotelCar.currentLocation">
+                        <div ng-switch-when="false">
+                            <div class="field">
+                                <button class="button __large __white-grey"  ng-click="setLocation(true)" ng-required="isLocationRequired">Current Location</button>
+                            </div>
+                        </div>
+                        <div ng-switch-when="true">
+                            <div class="field">
+                                <button class="button __large __white-grey __style-1"  ng-click="setLocation(false)" ng-required="isLocationRequired">Current Location</button>
+                            </div>
+                        </div>
+                    </div>     
+                </div>
+                <div ng-If="isAddressRequired">
+                    <div class="field_label">
+                        <label for="">Or enter Address</label>
+                    </div>                    
+                    <div class="field_content">
+                        <input type="text"  ng-class="addressClass" name="Address" ng-model="HotelCar.enteredAddress" ng-required="isAddressRequired" ng-change="changeAddress(HotelCar.enteredAddress)">
+                    </div> 
+                 </div>                
+                <div class="field">
+                    <div class="field_label">Pick Up Time</div>
+                    <div class="field_content">
+                        <div class="fields __style-1">
+                            <div class="icons-group __style-1">
+                            <span class="icon __arrow __style-1" ng-click="PlusDate()"></span>
+                            <span class="icon __arrow" ng-click="MinusDate()"></span>
+                            </div> 
+                            <input type="text" class="text-field __first date-picker" ng-model="HotelCar.dateCar">                            
+                            <input type="text" class="text-field time-picker" ng-model="HotelCar.timeCar">
+                            <div class="icons-group">
+                            <span class="icon __arrow __style-1" ng-click="PlusTime()" ></span>
+                            <span class="icon __arrow" ng-click="MinusTime()"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <button class="button __medium __white-grey __aligner" type="button" ng-click="setCurrentDateTime()">NOW</button>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field __style-1">
+                    <div class="field_label">
+                        <label for="">Your information:</label>
+                    </div>
+                    <div class="field_content  __style-1">
+                        <input type="text" class="text-field __width-S" numbers-only placeholder="Room No." ng-model="HotelCar.roomNo" >
+                        <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="HotelCar.lastName">
+                        <span class="warning-info" id="errorsMsg" ng-show="hotelCarForm.Address.$error.required">*Fields required to fill</span>
+                    </div>
+                </div>                
+                
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+
+                </div>
+            </form>
+        </div>
+    </div> 
+</div>

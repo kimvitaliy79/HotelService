@@ -1,0 +1,212 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('guestPreference', ['ngResource']).controller("GuestPreferenceCtrl",
+    function ($scope, $resource, $http) {
+        $scope.GuestPreference = {
+            roomNo: '1', lastName: 'Bob', questPreference: ''
+        }
+
+        angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+        $scope.limitClass = 'symbols-limit';
+        $scope.maxsymbolsClass = "max-symbols";
+        $scope.guestPrefClass = "text-field __limit";
+        $scope.isErrorInLength = false;
+
+        $scope.validate = function (validateItem) {
+            if (angular.isDefined(validateItem)) {
+                if (validateItem.length >= 180) {
+                    $scope.limitClass = 'symbols-limit __warning';
+                    $scope.maxsymbolsClass = "max-symbols __warning";
+                    $scope.isErrorInLength = true;
+                }
+                else {
+                    $scope.limitClass = 'symbols-limit';
+                    $scope.maxsymbolsClass = "max-symbols";
+                    $scope.isErrorInLength = false;
+                }
+            }
+        }
+
+        $scope.sendRequest = function () {
+            $scope.GuestPreference;
+
+            if (!$scope.guestPreferenceForm.preference.$valid) {
+                $scope.guestPrefClass = "text-field __limit __warning";
+            }
+            else {
+                if ($scope.maxsymbolsClass == "max-symbols __warning")
+                    return;
+
+                $.fancybox.close();
+
+                var postData = {
+                    request_type: "inside",
+                    request: {
+                        request_form: "guest_preference",
+                        room_number: "",
+                        last_name: "",
+                        send_date:"",
+                        request_body: {
+                            quest_preference: "",
+                            call_AYS: ""                            
+                        }
+                    }
+                }
+
+                postData.request.room_number = $scope.GuestPreference.roomNo;
+                postData.request.last_name = $scope.GuestPreference.lastName;
+                postData.request.request_body.quest_preference = $scope.GuestPreference.questPreference;
+                postData.request.request_body.call_AYS = "No";
+                postData.request.send_date = Date.parse(new Date());
+
+
+                //$http.get('http://hotels.modera.co/api/requests').
+                //  success(function (data, status) {
+                //      alert("success");
+                //  }).
+                //  error(function (data, status) {
+                //      alert("error");
+                //  });
+
+                var url = "http://hotels.modera.co/api/requests?callback=JSON_CALLBACK";
+
+                $http.jsonp(url).
+                    success(function (data, status, headers, config) {
+                        //what do I do here?
+                        alert("success");
+                    }).
+                    error(function (data, status, headers, config) {
+                        alert("error");
+                    });
+
+                
+                //$http({
+                //    url: 'http://hotels.modera.co/api/requests',
+                //    data: postData,
+                //    method : 'POST',
+                //    headers : {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'}
+                //}).success(function (data, status) {
+                //      alert("success");
+                //  }).
+                //  error(function (data, status) {
+                //      alert("error");
+                //  });
+
+
+                //$.post('http://hotels.modera.co/api/requests', postData, function(data, status){
+                //    if(status == "success"){
+                //        alert( "Data Saved: " + data.message );
+                //    }
+                //})
+
+
+                //$http.post('http://hotels.modera.co/api/requests', postData).
+                //   success(function (data, status) {
+                //       alert("success");
+                //   }).
+                //   error(function (data, status) {
+                //       alert("error");
+                //   });
+
+                //$resource('http://hotels.modera.co/api/requests').save(null, postData, function (u, putResponseHeaders) {
+
+                //$.fancybox.open([{ type: 'ajax', href: '/InsideAYS/successMsg.html' }], {
+                //    padding: 0,
+                //    scrolling: 'visible'
+                //});
+                //}, function (u, putResponseHeaders) {
+                //    alert("error");
+                //});
+
+             
+            }          
+
+            angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+        }
+
+        $scope.detectmob = function () {
+            if (navigator.userAgent.match(/Android/i)
+            || navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgent.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i)
+            ) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+    })
+     .directive('numbersOnly', function () {
+         return {
+             restrict: 'A',
+             link: function (scope, elm, attrs, ctrl) {
+                 elm.on('keydown', function (event) {
+                     // Allow: backspace, delete, tab, escape, enter and .
+                     if ($.inArray(event.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                         // Allow: Ctrl+A
+                         (event.keyCode == 65 && event.ctrlKey === true) ||
+                         // Allow: home, end, left, right
+                         (event.keyCode >= 35 && event.keyCode <= 39)) {
+                         // let it happen, don't do anything
+                         return;
+                     }
+                     else {
+                         // Ensure that it is a number and stop the keypress
+                         if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                             event.preventDefault();
+                         }
+                     }
+                 });
+             }
+         }
+     });
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__guest-preference'), ['guestPreference']);        
+    });
+    //@ sourceURL=guestPreference.js 
+</script>
+
+<div class="ui-popup __style-3" id="popup__guest-preference" ng-controller="GuestPreferenceCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__guest-preference_ic">Guest Preference</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="guestPreferenceForm" novalidate class="css-form">
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">What can I do for you?</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" ng-class="guestPrefClass" placeholder="" maxlength="180" name="preference" ng-model="GuestPreference.questPreference" ng-change="validate(GuestPreference.questPreference)" required>
+                        <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                    </div>
+                </div>
+                <div class="field" ng-if="detectmob()">
+                    <button class="button __large __white-grey">Call  At Your Service</button>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field __style-1">
+                    <div class="field_label">
+                        <label for="">Your information:</label>
+                    </div>
+                    <div class="field_content  __style-1">
+                        <input type="text" class="text-field __width-S" placeholder="Room No." numbers-only ng-model="GuestPreference.roomNo">
+                        <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="GuestPreference.lastName">
+                        <span class="warning-info" id="errorsMsg" ng-show="guestPreferenceForm.preference.$error.required">*Fields required to fill</span>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" ng-click="sendRequest()" type="button">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

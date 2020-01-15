@@ -1,0 +1,86 @@
+c:\users\vitaliy\documents\visual studio 2013\Projects\Marriott\WebApplication1\bin\WebApplication1.dll.config
+c:\users\vitaliy\documents\visual studio 2013\Projects\Marriott\WebApplication1\bin\WebApplication1.dll
+c:\users\vitaliy\documents\visual studio 2013\Projects\Marriott\WebApplication1\bin\WebApplication1.pdb
+c:\users\vitaliy\documents\visual studio 2013\Projects\Marriott\WebApplication1\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+c:\users\vitaliy\documents\visual studio 2013\Projects\Marriott\WebApplication1\obj\Debug\WebApplication1.dll
+c:\users\vitaliy\documents\visual studio 2013\Projects\Marriott\WebApplication1\obj\Debug\WebApplication1.pdb
+C:\Users\Vitaliy\Documents\Visual Studio 2013\Projects\Marriott\Marriott\bin\WebApplication1.dll
+C:\Users\Vitaliy\Documents\Visual Studio 2013\Projects\Marriott\Marriott\bin\WebApplication1.pdb
+C:\Users\Vitaliy\Documents\Visual Studio 2013\Projects\Marriott\Marriott\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+C:\Users\Vitaliy\Documents\Visual Studio 2013\Projects\Marriott\Marriott\obj\Debug\WebApplication1.dll
+C:\Users\Vitaliy\Documents\Visual Studio 2013\Projects\Marriott\Marriott\obj\Debug\WebApplication1.pdb
+C:\Users\Vitaliy\Documents\Visual Studio 2013\Projects\Marriott\Marriott\bin\WebApplication1.dll.config
+C:\project\Marriott\Marriott\bin\WebApplication1.dll.config
+C:\project\Marriott\Marriott\bin\WebApplication1.dll
+C:\project\Marriott\Marriott\bin\WebApplication1.pdb
+C:\project\Marriott\Marriott\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+C:\project\Marriott\Marriott\obj\Debug\WebApplication1.dll
+C:\project\Marriott\Marriott\obj\Debug\WebApplication1.pdb
+C:\project\Marriott normal screen\Marriott\bin\WebApplication1.dll.config
+C:\project\Marriott normal screen\Marriott\bin\WebApplication1.dll
+C:\project\Marriott normal screen\Marriott\bin\WebApplication1.pdb
+C:\project\Marriott normal screen\Marriott\obj\Debug\WebApplication1.dll
+C:\project\Marriott normal screen\Marriott\obj\Debug\WebApplication1.pdb
+C:\project\Marriott normal screen - dinamic data\Marriott\bin\WebApplication1.dll.config
+C:\project\Marriott normal screen - dinamic data\Marriott\bin\WebApplication1.dll
+C:\project\Marriott normal screen - dinamic data\Marriott\bin\WebApplication1.pdb
+C:\project\Marriott normal screen - dinamic data\Marriott\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+C:\project\Marriott normal screen - dinamic data\Marriott\obj\Debug\WebApplication1.dll
+C:\project\Marriott normal screen - dinamic data\Marriott\obj\Debug\WebApplication1.pdb
+C:\project\Marriott normal screen - копия\Marriott\bin\WebApplication1.dll.config
+C:\project\Marriott normal screen - копия\Marriott\bin\WebApplication1.dll
+C:\project\Marriott normal screen - копия\Marriott\bin\WebApplication1.pdb
+C:\project\Marriott normal screen - копия\Marriott\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+C:\project\Marriott normal screen - копия\Marriott\obj\Debug\WebApplication1.dll
+C:\project\Marriott normal screen - копия\Marriott\obj\Debug\WebApplication1.pdb
+C:\project\Marriott hotel\Marriott\bin\WebApplication1.dll.config
+C:\project\Marriott hotel\Marriott\bin\WebApplication1.dll
+C:\project\Marriott hotel\Marriott\bin\WebApplication1.pdb
+C:\project\Marriott hotel\Marriott\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+C:\project\Marriott hotel\Marriott\obj\Debug\WebApplication1.dll
+C:\project\Marriott hotel\Marriott\obj\Debug\WebApplication1.pdb
+C:\project\Marriott hotel - 13.05.2014\Marriott\bin\WebApplication1.dll.config
+C:\project\Marriott hotel - 13.05.2014\Marriott\bin\WebApplication1.dll
+C:\project\Marriott hotel - 13.05.2014\Marriott\bin\WebApplication1.pdb
+C:\project\Marriott hotel - 13.05.2014\Marriott\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+C:\project\Marriott hotel - 13.05.2014\Marriott\obj\Debug\WebApplication1.dll
+C:\project\Marriott hotel - 13.05.2014\Marriott\obj\Debug\WebApplication1.pdb
+F:\dida\project\Marriott hotel - 13.05.2014\Marriott\bin\WebApplication1.dll.config
+F:\dida\project\Marriott hotel - 13.05.2014\Marriott\bin\WebApplication1.dll
+F:\dida\project\Marriott hotel - 13.05.2014\Marriott\bin\WebApplication1.pdb
+F:\dida\project\Marriott hotel - 13.05.2014\Marriott\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+F:\dida\project\Marriott hotel - 13.05.2014\Marriott\obj\Debug\WebApplication1.dll
+F:\dida\project\Marriott hotel - 13.05.2014\Marriott\obj\Debug\WebApplication1.pdb
+F:\Marriote\Marriott hotel - 13.05.2014\Marriott\bin\WebApplication1.dll
+F:\Marriote\Marriott hotel - 13.05.2014\Marriott\bin\WebApplication1.pdb
+F:\Marriote\Marriott hotel - 13.05.2014\Marriott\obj\Debug\WebApplication1.dll
+F:\Marriote\Marriott hotel - 13.05.2014\Marriott\obj\Debug\WebApplication1.pdb
+F:\Marriote\Marriott hotel - 13.05.2014\Marriott\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+F:\Marriote\Marriott hotel - 13.05.2014 - Sarvar repository\Marriott\bin\WebApplication1.dll
+F:\Marriote\Marriott hotel - 13.05.2014 - Sarvar repository\Marriott\bin\WebApplication1.pdb
+F:\Marriote\Marriott hotel - 13.05.2014 - Sarvar repository\Marriott\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+F:\Marriote\Marriott hotel - 13.05.2014 - Sarvar repository\Marriott\obj\Debug\WebApplication1.dll
+F:\Marriote\Marriott hotel - 13.05.2014 - Sarvar repository\Marriott\obj\Debug\WebApplication1.pdb
+D:\GIT\mariotte\bin\WebApplication1.dll
+D:\GIT\mariotte\bin\WebApplication1.pdb
+D:\GIT\mariotte\bin\mscorlib.dll
+D:\GIT\mariotte\bin\normidna.nlp
+D:\GIT\mariotte\bin\normnfc.nlp
+D:\GIT\mariotte\bin\normnfd.nlp
+D:\GIT\mariotte\bin\normnfkc.nlp
+D:\GIT\mariotte\bin\normnfkd.nlp
+D:\GIT\mariotte\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+D:\GIT\mariotte\obj\Debug\WebApplication1.dll
+D:\GIT\mariotte\obj\Debug\WebApplication1.pdb
+E:\bit\apache2\htdocs\git\mariotte\bin\WebApplication1.dll.config
+E:\bit\apache2\htdocs\git\mariotte\bin\WebApplication1.dll
+E:\bit\apache2\htdocs\git\mariotte\bin\WebApplication1.pdb
+E:\bit\apache2\htdocs\git\mariotte\obj\Debug\Marriott.csprojResolveAssemblyReference.cache
+E:\bit\apache2\htdocs\git\mariotte\obj\Debug\WebApplication1.dll
+E:\bit\apache2\htdocs\git\mariotte\obj\Debug\WebApplication1.pdb
+D:\Виталий\sarvar_ruzmatov-otel\bin\WebApplication1.dll
+D:\Виталий\sarvar_ruzmatov-otel\bin\WebApplication1.pdb
+D:\Виталий\sarvar_ruzmatov-otel\obj\Debug\WebApplication1.dll
+D:\Виталий\sarvar_ruzmatov-otel\obj\Debug\WebApplication1.pdb
+D:\Виталий\sarvar_ruzmatov-otel\bin\WebApplication1.dll.config
+D:\Виталий\sarvar_ruzmatov-otel\obj\Debug\Marriott.csprojAssemblyReference.cache

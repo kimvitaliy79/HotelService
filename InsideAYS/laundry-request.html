@@ -1,0 +1,164 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('laundry', ['ngResource']).controller("LaundryCtrl",
+      function ($scope, $resource) {
+          $scope.Laundry = {
+              guestPreference: '', roomNo: '1', lastName: 'Bob',
+              services: services = []
+          };
+
+          //angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+          $scope.isServiceSelected = false;
+          $scope.guestPreferenceClass = "text-field __limit";
+          $scope.iconWarning = "icon __checkbox";
+          angular.element(document.getElementById('errorsMsg')).css('display', 'none');        
+                  
+          $resource('http://hotels.modera.co/api/catalogs/:request_type/laundry_service_types', { request_type: 'inside' }).get(null, function (u, getResponseHeaders) {
+              // alert(u);
+              if ($scope.Laundry.services.length == 0) {
+                  var remain = new Array();
+                  for (var index in u.laundry_service_types) {
+                      //'Completed' 'In progress' 'Pending'
+                      u.laundry_service_types[index]["selected"] = false;
+                      remain.push(u.laundry_service_types[index]);
+                  }            
+                  $scope.Laundry.services = remain;
+              }      
+          });
+        
+          $scope.changeChecked = function (item)
+          {
+              if ($scope.iconWarning == "icon __checkbox __warning") {
+                  $scope.iconWarning = "icon __checkbox";
+                  $scope.isServiceSelected = false;
+              }     
+          }
+
+          $scope.sendRequest = function () {
+              $scope.Laundry;            
+                
+              //if (newServiceArr.length>0)
+              //$scope.Laundry.services = newServiceArr;
+
+              var isOneSelected = false;
+
+              if ($scope.laundryRequestForm.guestPreference.$invalid) {              
+                  $scope.guestPreferenceClass = "text-field __limit __warning";
+                  angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+              }
+                 
+                  for (i = 0; i < $scope.Laundry.services.length; i++) {
+                      if ($scope.Laundry.services[i].selected) { 
+                          isOneSelected = true;
+                          break;
+                      }
+                  }
+
+              if (!isOneSelected)
+              {                 
+               $scope.isServiceSelected = true;
+               $scope.iconWarning = "icon __checkbox __warning";
+               angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+              }
+
+              if (isOneSelected && !$scope.laundryRequestForm.guestPreference.$invalid) {
+
+                  var postData = {
+                      request_type: "inside",
+                      request: {
+                          request_form: "laundry_request",
+                          room_number: "",
+                          last_name: "",
+                          send_date: "",
+                          request_body: {
+                              //conference_room: "",
+                              //room_setup_details: "",
+                              //coffee_break: "",
+                              //persons: 1,
+                              //coffee_break_time: 0,
+                              //persons_qty_for_coffee_break: "",
+                              //addition_information: ""
+                          }
+                      }
+                  }
+
+                  postData.request.room_number = $scope.Laundry.roomNo;
+                  postData.request.last_name = $scope.Laundry.lastName;
+                  postData.request.send_date = Date.parse(new Date());
+
+                  //var newServiceArr = new Array();
+                  for (i = 0; i < $scope.Laundry.services.length; i++) {
+                      if ($scope.Laundry.services[i].selected) {
+                          delete $scope.Laundry.services[i].selected;
+                          postData.request.request_body["selected"] = $scope.Laundry.services[i].name;
+                          //newServiceArr.push($scope.Laundry.services[i]);    
+                      }
+                  }
+                  $scope.isServiceSelected = false;
+                  //$scope.Laundry.services = newServiceArr;
+                  //$scope.Laundry;
+                  //$scope.Laundry = {
+                  //    guestPreference: '', roomNo: '1', lastName: 'Bob',
+                  //    services: services = []
+                  //};        
+
+                  $.fancybox.close();
+              }
+
+          }
+      });
+
+    angular.element(document).ready(function () {       
+            angular.bootstrap(document.getElementById('popup__laundry-request'), ['laundry']);
+        });
+    //@ sourceURL=laundryRequest.js 
+</script>
+<div class="ui-popup __style-3" id="popup__laundry-request" ng-controller="LaundryCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__laundry-request_ic">Laundry Request</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="laundryRequestForm" novalidate class="css-form">
+                <div class="field">
+                    <ul class="items-list __active">
+                        <li class="item" ng-repeat="serv in Laundry.services">
+                            <div class="field">
+                                <div class="field_content">
+                                    <div class="checkbox-inline __style-1">
+                                        <input type="checkbox" id="{{serv.id}}" ng-model="serv.selected" ng-change="changeChecked(serv)">
+                                        <label for="{{serv.id}}"><span ng-class="iconWarning"></span><span class="item_name">{{serv.name}} ({{serv.description  }})</span><span class="item_price">{{serv.price}} {{serv.currency.name}}</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>                      
+                    </ul>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">Guest Preference:</label><span class="max-symbols"><span class="symbols-limit">180</span> symbols</span>
+                    </div>
+                    <div class="field_content"><!--guestPreferenceClass-->
+                        <input type="text" ng-class="guestPreferenceClass" placeholder="Dry Cleaning, warm washing." name="guestPreference" maxlength="180" ng-model="Laundry.guestPreference" required>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field __style-1">
+                    <div class="field_label">
+                        <label for="">Your information:</label>
+                    </div>
+                    <div class="field_content  __style-1">
+                        <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="Laundry.roomNo">
+                        <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="Laundry.lastName">
+                        <span class="warning-info" id="errorsMsg" ng-show="isServiceSelected || laundryRequestForm.guestPreference.$error.required">*Fields required to fill</span>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button"  ng-click="sendRequest()">Send request</button>
+                </div>     
+            </form>
+        </div>
+    </div>
+</div>

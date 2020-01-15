@@ -1,0 +1,241 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('flightDetails', ['ngResource']).controller("FlightDetailsCtrl",
+        function ($scope, $resource) {
+            $scope.FlightDetails = {
+                roomNo: '1', lastName: 'Bob', specialRequest: '', from: '', to: '', flightNumber: '', departDate: '', returnDate: ''
+            };
+
+            angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+
+            $scope.limitClass = 'symbols-limit';
+            $scope.maxsymbolsClass = "max-symbols";
+            $scope.specRequestClass = "text-field __limit";
+            $scope.flightClass = "text-field";           
+            $scope.fromClass = "text-field";           
+            $scope.toClass = "text-field";
+
+            $scope.isOnlyNumber = false;
+            $scope.isErrorInLength = false;
+
+            var d = new Date();
+            var weekDay = d.getDay();
+            var month = d.getMonth();
+            var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var weekArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            var day = d.getDate();
+            $scope.FlightDetails.departDate = weekArray[weekDay] + " " + monthArray[month] + " " + day;
+            $scope.FlightDetails.returnDate = weekArray[weekDay] + " " + monthArray[month] + " " + day;
+            //var hh = d.getHours();
+            //var m = d.getMinutes();
+            //var dd = "AM";
+            //var h = hh;
+            //if (h >= 12) {
+            //    h = hh - 12;
+            //    dd = "PM";
+            //}
+            //if (h == 0) {
+            //    h = 12;
+            //}
+            //$scope.FlightDetails.time = h + ":" + m + " " + dd;
+
+            $scope.validate = function (validateItem) {
+                if (angular.isDefined(validateItem)) {
+                    if (validateItem.length >= 180) {
+                        $scope.limitClass = 'symbols-limit __warning';
+                        $scope.maxsymbolsClass = "max-symbols __warning";
+                        $scope.isErrorInLength = true;
+                    }
+                    else {
+                        $scope.limitClass = 'symbols-limit';
+                        $scope.maxsymbolsClass = "max-symbols";
+                        $scope.isErrorInLength = false;
+                    }
+                }
+            }
+
+            $scope.PlusDate = function (input) {
+
+                var arrayDates = $scope.flightDetailsForm[input].$modelValue.split(" ");
+                var date = parseInt(arrayDates[2]) + 1;
+                $("#" + input).datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+            }
+
+            $scope.MinusDate = function (input) {
+                var arrayDates = $scope.flightDetailsForm[input].$modelValue.split(" ");
+                var date = parseInt(arrayDates[2]) - 1;
+                $("#" + input).datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+            }        
+
+            $scope.sendRequest = function () {              
+
+                if (!$scope.flightDetailsForm.specRequest.$error.required && !$scope.flightDetailsForm.flightNumber.$error.required &&
+                    !$scope.flightDetailsForm.fromInput.$error.required && !$scope.flightDetailsForm.toInput.$error.required) {
+
+                    if ($scope.maxsymbolsClass == "max-symbols __warning")
+                        return;                    
+                   
+
+                    var postData = {
+                        request_type: "inside",
+                        request: {
+                            request_form: "check_flight_details",
+                            room_number: "",
+                            last_name: "",
+                            send_date: "",
+                            request_body: {
+                                flight_number: "",
+                                from: "",
+                                to: "",
+                                depart: "",
+                                Return: "",
+                                special_request:""
+                            }
+                        }
+                    }
+
+                    postData.request.room_number = $scope.FlightDetails.roomNo;
+                    postData.request.last_name = $scope.FlightDetails.lastName;
+                    postData.request.send_date = Date.parse(new Date());
+
+                    postData.request.request_body.flight_number = $scope.FlightDetails.flightNumber;
+                    postData.request.request_body.from = $scope.FlightDetails.from;
+                    postData.request.request_body.to = $scope.FlightDetails.to;
+                    postData.request.request_body.depart = $scope.FlightDetails.departDate;
+                    postData.request.request_body.Return = $scope.FlightDetails.returnDate;
+                    postData.request.request_body.special_request = $scope.FlightDetails.specialRequest;
+
+                    $.fancybox.close();
+                    $.fancybox.open([{ type: 'ajax', href: '/InsideAYS/successMsg.html' }], {
+                        padding: 0,
+                        scrolling: 'visible'
+                    });
+                }
+
+                if ($scope.flightDetailsForm.specRequest.$error.required)
+                    $scope.specRequestClass = "text-field __limit __warning";
+
+                   
+                if ($scope.flightDetailsForm.flightNumber.$error.required)
+                    $scope.flightClass = "text-field __warning";
+                if ($scope.flightDetailsForm.fromInput.$error.required)
+                    $scope.fromClass = "text-field __warning";
+                if ($scope.flightDetailsForm.toInput.$error.required)
+                    $scope.toClass = "text-field __warning";
+
+
+                angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+            }
+        });
+   
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__check-flight-details'), ['flightDetails']);   
+
+        $('.date-picker').datepicker({
+            'format': 'D M d',
+            'autoclose': true
+        });
+    });
+    //@ sourceURL=flightsDetails.js
+</script>
+<div class="ui-popup __style-2" id="popup__check-flight-details" ng-controller="FlightDetailsCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__check-flight-details_ic">Check Flight details:</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="flightDetailsForm" novalidate class="css-form">
+                <div class="form_inner">
+                    <div class="form_column __left">
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Flight number:</label>
+                            </div>
+                            <div class="field_content">
+                                <input type="text" ng-class="flightClass"  name="flightNumber" ng-model="FlightDetails.flightNumber" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="fields">
+                                <div class="field __half-field __style-1">
+                                    <div class="field_label">
+                                        <label for="#">From</label>
+                                    </div>
+                                    <div class="field_content">
+                                        <input type="text" ng-class="fromClass" name="fromInput" ng-model="FlightDetails.from" required>
+                                    </div>
+                                </div>
+                                <div class="field __half-field">
+                                    <div class="field_label">
+                                        <label for="#">To</label>
+                                    </div>
+                                    <div class="field_content">
+                                        <input type="text"  ng-class="toClass" name="toInput" ng-model="FlightDetails.to" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">                            	
+                            <div class="fields">
+                                <div class="field __half-field __style-1">
+                                    <div class="field_label">
+                                        <label for="#">Depart</label>
+                                    </div>
+                                    <div class="field_content">
+                                        <div class="field-date">
+                                            <div class="icons-group">
+                                                <span class="icon __arrow __style-1" ng-click="PlusDate('departDateInput')"></span>
+                                                <span class="icon __arrow" ng-click="MinusDate('departDateInput')"></span>
+                                            </div> 
+                                            <input type="text" class="text-field __first date-picker" name="departDateInput" id="departDateInput" ng-model="FlightDetails.departDate">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field __half-field">
+                                    <div class="field_label">
+                                        <label for="#">Return</label>
+                                    </div>
+                                    <div class="field_content">
+                                        <div class="field-date">
+                                            <div class="icons-group">
+                                                <span class="icon __arrow __style-1" ng-click="PlusDate('returnDateInput')"></span>
+                                                <span class="icon __arrow" ng-click="MinusDate('returnDateInput')"></span>
+                                            </div> 
+                                            <input type="text" class="text-field __first date-picker" name="returnDateInput" id="returnDateInput" ng-model="FlightDetails.returnDate">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_column __right">
+                       <div class="field">
+                    <div class="field_label">
+                        <label for="">Special Request:</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" ng-class="specRequestClass" placeholder="" maxlength="180" name="specRequest" required ng-model="FlightDetails.specialRequest" ng-change="validate(FlightDetails.specialRequest)">
+                         <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                    </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Your information:</label>
+                            </div>
+                            <div class="field_content __style-1">
+                                <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="FlightDetails.roomNo">
+                                <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="FlightDetails.lastName">
+                                  <span class="warning-info" id="errorsMsg" ng-show="flightDetailsForm.specRequest.$error.required || flightDetailsForm.fromInput.$error.required || flightDetailsForm.toInput.$error.required || flightDetailsForm.flightNumber.$error.required">*Fields required to fill</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,260 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('cityTour', ['ngResource']).controller("CityTourCtrl",
+    function ($scope, $resource) {
+        $scope.CityTour = {
+            roomNo: '1', lastName: 'Bob', persons: 1, specialRequest: '', date:'', time:''
+        };
+
+        angular.element(document.getElementById('errorsMsg')).css('display', 'none');       
+        angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+
+
+        $scope.limitClass = 'symbols-limit';
+        $scope.maxsymbolsClass = "max-symbols"; 
+        $scope.personsClass = "text-field __width-S __aligner";
+        $scope.specRequestClass = "text-field __limit";
+        $scope.isOnlyNumber = false;
+        $scope.isErrorInLength = false;    
+
+        var d = new Date();
+        var weekDay = d.getDay();
+        var month = d.getMonth();
+        var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        var weekArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        var day = d.getDate();
+        $scope.CityTour.date = weekArray[weekDay] + " " + monthArray[month] + " " + day;
+
+        var hh = d.getHours();
+        var m = d.getMinutes();
+        var dd = "AM";
+        var h = hh;
+        if (h >= 12) {
+            h = hh - 12;
+            dd = "PM";
+        }
+        if (h == 0) {
+            h = 12;
+        }
+        $scope.CityTour.time = h + ":" + m + " " + dd;
+
+        $scope.validate = function (validateItem) {
+            if (angular.isDefined(validateItem)) {
+                if (validateItem.length >= 180) {
+                    $scope.limitClass = 'symbols-limit __warning';
+                    $scope.maxsymbolsClass = "max-symbols __warning";
+                    $scope.isErrorInLength = true;
+                }
+                else {
+                    $scope.limitClass = 'symbols-limit';
+                    $scope.maxsymbolsClass = "max-symbols";
+                    $scope.isErrorInLength = false;
+                }
+            }
+        }
+
+        $scope.PlusDate = function (input) {
+            var arrayDates = $scope.CityTour.date.split(" ");
+            var date = parseInt(arrayDates[2]) + 1;
+            $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+        }
+
+        $scope.MinusDate = function () {
+            var arrayDates = $scope.CityTour.date.split(" ");
+            var date = parseInt(arrayDates[2]) - 1;
+            $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+        }
+
+        $scope.PlusTime = function () {
+
+            var arrayTime = $scope.CityTour.time.split(":");
+            var hours = parseInt(arrayTime[0]) + 1;
+            var amPM = arrayTime[1].split(" ")[1];
+
+            if (hours >= 12) {
+                hours = hours - 12;
+
+                if (amPM == 'pm')
+                    amPM = "am";
+                else
+                    amPM = "pm";
+            }
+
+            var minutes = arrayTime[1].split(" ")[0];
+            $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+        }
+
+        $scope.MinusTime = function () {
+            var arrayTime = $scope.CityTour.time.split(":");
+            var hours = parseInt(arrayTime[0]) - 1;
+            var amPM = arrayTime[1].split(" ")[1];
+
+            if (hours == -1) {
+                hours = "11";
+                if (amPM == 'pm')
+                    amPM = "am";
+                else
+                    amPM = "pm";
+            }
+
+            var minutes = arrayTime[1].split(" ")[0];
+            $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+        }
+
+        $scope.sendRequest = function () {         
+
+            if (!$scope.cityTourForm.specRequest.$error.required && !$scope.cityTourForm.persons.$error.required) {
+
+                if ($scope.maxsymbolsClass == "max-symbols __warning")
+                    return;               
+
+                var postData = {
+                    request_type: "inside",
+                    request: {
+                        request_form: "city_tour",
+                        room_number: "",
+                        last_name: "",
+                        send_date: "",
+                        request_body: {
+                            persons: 1,
+                            visiting_time: "",
+                            special_request:""
+                        }
+                    }
+                }
+
+                postData.request.room_number = $scope.CityTour.roomNo;
+                postData.request.last_name = $scope.CityTour.lastName;
+                postData.request.send_date = Date.parse(new Date());
+
+                postData.request.request_body.persons = $scope.CityTour.persons;
+                postData.request.request_body.special_request = $scope.CityTour.specialRequest;
+                postData.request.request_body.visiting_time = $scope.CityTour.date + " " + $scope.CityTour.time;
+
+
+                $.fancybox.close();
+                $.fancybox.open([{ type: 'ajax', href: '/InsideAYS/successMsg.html' }], {
+                    padding: 0,
+                    scrolling: 'visible'
+                });
+            }
+
+            if ($scope.cityTourForm.specRequest.$error.required)
+                $scope.specRequestClass = "text-field __limit __warning";
+
+            if ($scope.cityTourForm.persons.$error.required)
+                $scope.personsClass = "text-field __width-S __aligner __warning";            
+
+            angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+
+
+        }
+    })
+    .directive('numbersOnly', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, elm, attrs, ctrl) {
+                elm.on('keydown', function (event) {
+                    // Allow: backspace, delete, tab, escape, enter and .
+                    if ($.inArray(event.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                        // Allow: Ctrl+A
+                        (event.keyCode == 65 && event.ctrlKey === true) ||
+                        // Allow: home, end, left, right
+                        (event.keyCode >= 35 && event.keyCode <= 39)) {
+                        // let it happen, don't do anything                        
+                        return;
+                    }
+                    else {
+                        // Ensure that it is a number and stop the keypress
+                        if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                            event.preventDefault();
+                            angular.element(document.getElementById('errorInPersons')).removeAttr('style');
+                        }
+                        else {
+                            angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+                        }
+                    }
+
+                });
+            }
+        }
+    });
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__book-tour'), ['cityTour']);       
+
+        $('.time-picker').timepicker({
+            'step': 15,
+            'timeFormat': 'g:i a'
+        });
+
+        $('.date-picker').datepicker({
+            'format': 'D M d',
+            'autoclose': true
+        });
+    });
+    //@ sourceURL=cityTour.js
+</script>
+
+<div class="ui-popup __style-3" id="popup__book-tour" ng-controller="CityTourCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__book-tour_ic">Book a Tour:</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="cityTourForm" novalidate class="css-form">
+                <div class="field">
+                    <div class="field_label">Visiting time:</div>
+                    <div class="field_content">
+                         <div class="fields __style-1">
+                                     <div class="icons-group __style-1">
+                                        <span class="icon __arrow __style-1" ng-click="PlusDate()"></span>
+                                        <span class="icon __arrow" ng-click="MinusDate()"></span>
+                                      </div> 
+                                    <input type="text" class="text-field __first date-picker" ng-model="CityTour.date">                                    
+                                    <input type="text" class="text-field time-picker" ng-model="CityTour.time">
+                                    <div class="icons-group">
+                                    <span class="icon __arrow __style-1" ng-click="PlusTime()" ></span>
+                                    <span class="icon __arrow" ng-click="MinusTime()"></span>
+                                    </div>
+                           </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field_content">
+                        <div class="field-simple-inline">
+                            <label for="">Persons:</label>
+                            <input type="text" ng-class="personsClass" name="persons" numbers-only ng-model="CityTour.persons" required>
+                             <span class="warning-info" id="errorInPersons">*Only integer</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">Special Request:</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" ng-class="specRequestClass" placeholder="" maxlength="180" name="specRequest" required ng-model="CityTour.specialRequest" ng-change="validate(CityTour.specialRequest)">
+                         <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field __style-1">
+                    <div class="field_label">
+                        <label for="">Your information:</label>
+                    </div>
+                    <div class="field_content  __style-1">
+                        <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="CityTour.roomNo">
+                        <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="CityTour.lastName">
+                        <span class="warning-info" id="errorsMsg" ng-show="cityTourForm.specRequest.$error.required || cityTourForm.persons.$error.required">*Fields required to fill</span>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

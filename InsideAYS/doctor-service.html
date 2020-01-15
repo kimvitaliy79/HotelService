@@ -1,0 +1,121 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('medical', ['ngResource']).controller("medicalCtrl", function ($scope, $resource) {
+
+        $scope.Medical = {
+            additionInfo: '', complaining: '', roomNo: '1', lastName: 'Bob'
+        };
+
+        $scope.limitClass = 'symbols-limit';
+        $scope.maxsymbolsClass = "max-symbols";
+        $scope.complainingClass = "text-field";
+        angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+        $scope.isErrorInLength = false;
+
+        $scope.validate = function (validateItem) {
+            if (angular.isDefined(validateItem)) {
+                if (validateItem.length >= 180) {
+                    $scope.limitClass = 'symbols-limit __warning';
+                    $scope.maxsymbolsClass = "max-symbols __warning";
+                    $scope.isErrorInLength = true;
+                }
+                else {
+                    $scope.limitClass = 'symbols-limit';
+                    $scope.maxsymbolsClass = "max-symbols";
+                    $scope.isErrorInLength = false;
+                }
+            }
+        }
+
+        $scope.sendRequest = function () {
+            if ($scope.maxsymbolsClass == "max-symbols __warning")
+                return;
+
+
+            if ($scope.medicalForm.complaining.$invalid)
+                $scope.complainingClass = "text-field __warning";
+          
+
+            if (!$scope.medicalForm.complaining.$invalid) {
+
+                //var postData = {
+                //    request_type: "inside",
+                //    request: {
+                //        request_form: "guest_preference",
+                //        room_number: "",
+                //        last_name: "",
+                //        send_date: "",
+                //        request_body: {
+                //            quest_preference: "",
+                //            call_AYS: ""
+                //        }
+                //    }
+                //}
+
+                //postData.request.room_number = $scope.GuestPreference.roomNo;
+                //postData.request.last_name = $scope.GuestPreference.lastName;
+                //postData.request.request_body.quest_preference = $scope.GuestPreference.questPreference;
+
+                $.fancybox.close();
+            }
+            else
+                angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+        }
+
+    })
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__doctor-service'), ['medical']);
+
+    });
+    //@ sourceURL=medical.js
+ </script>
+
+<div class="ui-popup __style-1" id="popup__doctor-service" ng-controller="medicalCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4>
+                Medical<br>
+                Service
+            </h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="medicalForm" novalidate class="css-form">
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">What are you complaining about?</label>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" ng-class="complainingClass" placeholder="" name="complaining" ng-model="Medical.complaining" required>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">Additional information:</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" class="text-field __limit" placeholder="" maxlength="180" ng-model="Medical.additionInfo" ng-change="validate(Medical.additionInfo)">
+                            <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                            <span class="warning-info" id="errorsMsg" ng-show="medicalForm.complaining.$invalid">*Fields required to fill</span>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-2"></div>
+                <div class="field __style-1">
+                    <div class="field_description">*Medical services are billed at standard rate</div>
+                    <div class="field_label">
+                        <label for="">Your information:</label>
+                    </div>
+                    <div class="field_content  __style-1">
+                        <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="Medical.roomNo">
+                        <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="Medical.lastName">
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>    

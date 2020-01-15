@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AC38DB3F-69A5-47D4-8253-F1D36D578531}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WebApplication1</RootNamespace>
+    <AssemblyName>WebApplication1</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\bootstrap-datepicker.css" />
+    <Content Include="Content\core-ui-select.css" />
+    <Content Include="Content\jquery.fancybox.css" />
+    <Content Include="Content\jquery.scrollpane.css" />
+    <Content Include="Content\jquery.timepicker.css" />
+    <Content Include="Content\operatorStyles.css" />
+    <Content Include="Content\styles.css" />
+    <Content Include="images\absheron-spa_ic.png" />
+    <Content Include="images\airport-drop_ic.png" />
+    <Content Include="images\airport-pickup_ic.png" />
+    <Content Include="images\arrows-input.png" />
+    <Content Include="images\bell-boy_ic.png" />
+    <Content Include="images\black-button-active-bg.png" />
+    <Content Include="images\black-button-bg.png" />
+    <Content Include="images\black-button-hover-bg.png" />
+    <Content Include="images\book-meeting-room_ic.png" />
+    <Content Include="images\book-tour_ic.png" />
+    <Content Include="images\button-blue-active-bg.png" />
+    <Content Include="images\button-blue-bg.png" />
+    <Content Include="images\check-flight-details_ic.png" />
+    <Content Include="images\checkbox-icons.png" />
+    <Content Include="images\close-icon.png" />
+    <Content Include="images\entertainment_ic.png" />
+    <Content Include="images\fancybox\blank.gif" />
+    <Content Include="images\fancybox\fancybox_loading%402x.gif" />
+    <Content Include="images\fancybox\fancybox_loading.gif" />
+    <Content Include="images\fancybox\fancybox_overlay.png" />
+    <Content Include="images\fancybox\fancybox_sprite%402x.png" />
+    <Content Include="images\fancybox\fancybox_sprite.png" />
+    <Content Include="images\footer-bg.png" />
+    <Content Include="images\guest-preference_ic.png" />
+    <Content Include="images\header-bg.png" />
+    <Content Include="images\hotel-car_ic.png" />
+    <Content Include="images\housekeeping-request_ic.png" />
+    <Content Include="images\laundry-request_ic.png" />
+    <Content Include="images\logo.png" />
+    <Content Include="images\operator\black-button-active-bg.png" />
+    <Content Include="images\operator\black-button-bg.png" />
+    <Content Include="images\operator\black-button-hover-bg.png" />
+    <Content Include="images\operator\blue-gradient-bg.png" />
+    <Content Include="images\operator\grey-gradient-bg.png" />
+    <Content Include="images\operator\header-bg.png" />
+    <Content Include="images\operator\light-grey-gradient-bg.png" />
+    <Content Include="images\operator\logo.png" />
+    <Content Include="images\operator\main-sprite.png" />
+    <Content Include="images\page-logo.png" />
+    <Content Include="images\page-navigation-bg_hover.png" />
+    <Content Include="images\page-navtigation-bg.png" />
+    <Content Include="images\radio-buttons.png" />
+    <Content Include="images\restaurant-reservations-ic.png" />
+    <Content Include="images\room-maintenance_ic.png" />
+    <Content Include="images\room-service-order_ic.png" />
+    <Content Include="images\services-outside_03.png" />
+    <Content Include="images\services-outside_05.png" />
+    <Content Include="images\services-outside_09.png" />
+    <Content Include="images\services-outside_10.png" />
+    <Content Include="images\services_03.png" />
+    <Content Include="images\services_05.png" />
+    <Content Include="images\services_07.png" />
+    <Content Include="images\services_09.png" />
+    <Content Include="images\services_15.png" />
+    <Content Include="images\services_16.png" />
+    <Content Include="images\services_17.png" />
+    <Content Include="images\services_18.png" />
+    <Content Include="images\services_23.png" />
+    <Content Include="images\services_24.png" />
+    <Content Include="images\services_25.png" />
+    <Content Include="images\services_26.png" />
+    <Content Include="images\services_31.png" />
+    <Content Include="images\services_32.png" />
+    <Content Include="images\services_33.png" />
+    <Content Include="images\services_34.png" />
+    <Content Include="images\small-grey-button-bg.png" />
+    <Content Include="images\sprite.png" />
+    <Content Include="images\wakeup-call_ic.png" />
+    <Content Include="images\white-grey-button-bg-hover.png" />
+    <Content Include="images\white-grey-button-bg.png" />
+    <Content Include="InsideAYS\absheron-spa.html" />
+    <Content Include="InsideAYS\airport-drop.html" />
+    <Content Include="InsideAYS\airport-pickup.html" />
+    <Content Include="InsideAYS\bell-boy.html" />
+    <Content Include="InsideAYS\book-tour.html" />
+    <Content Include="InsideAYS\booking-meeting-room.html" />
+    <Content Include="InsideAYS\check-flight-details.html" />
+    <Content Include="InsideAYS\doctor-service.html" />
+    <Content Include="InsideAYS\ops.html" />
+    <Content Include="InsideAYS\successMsg.html" />
+    <Content Include="javascript\angular-resource.js" />
+    <Content Include="javascript\angular-route.js" />
+    <Content Include="javascript\angular.min.js" />
+    <Content Include="operator.html" />
+    <Content Include="OutsideAYS\entertainment-outside.html" />
+    <Content Include="InsideAYS\entertainment.html" />
+    <Content Include="InsideAYS\guest-preference.html" />
+    <Content Include="InsideAYS\hotel-car.html" />
+    <Content Include="InsideAYS\housekeeping-request.html" />
+    <Content Include="InsideAYS\laundry-request.html" />
+    <Content Include="InsideAYS\main.html" />
+    <Content Include="InsideAYS\preferences.html" />
+    <Content Include="OutsideAYS\hotel-car.html" />
+    <Content Include="OutsideAYS\restaurant-reservations-outside.html" />
+    <Content Include="InsideAYS\restaurant-reservations.html" />
+    <Content Include="InsideAYS\room-maintenance.html" />
+    <Content Include="InsideAYS\room-service-order.html" />
+    <Content Include="InsideAYS\wakeup-call.html" />
+    <Content Include="javascript\angular.js" />
+    <Content Include="javascript\angular.ng-modules.js" />
+    <Content Include="javascript\bootstrap-datepicker.js" />
+    <Content Include="javascript\geoPosition.js" />
+    <Content Include="javascript\html5shiv.js" />
+    <Content Include="javascript\jquery-1.11.0.min.js" />
+    <Content Include="javascript\jquery.core-ui-select.js" />
+    <Content Include="javascript\jquery.fancybox.js" />
+    <Content Include="javascript\jquery.fancybox.pack.js" />
+    <Content Include="javascript\insideServices.js" />
+    <Content Include="javascript\jquery.timepicker.js" />
+    <Content Include="javascript\scripts.js" />
+    <Content Include="index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MyRequests\my-request.html" />
+    <Content Include="OutsideAYS\main.html" />
+    <Content Include="report-to-manager.html" />
+    <Content Include="thank-you-for-your-request.html" />
+    <Content Include="web.config" />
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>57162</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:57162/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,154 @@
+﻿<!doctype html>
+<html lang="en" ng-app>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="Content/styles.css">
+    <link rel="stylesheet" href="Content/core-ui-select.css">
+    <link rel="stylesheet" href="Content/jquery.scrollpane.css">
+	<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+ 
+    <script type="text/javascript">
+        function RedirectCtrl($scope, $window) {
+            $scope.Logo = function () {
+                $window.open("index.html", '_self');
+            }
+            $scope.MyRequest = function () {
+                //var lang = $scope.selectLang;
+                $window.open("MyRequests/my-request.html", '_self');
+            }
+        }
+    </script>
+    
+	<title>Marriot</title>
+</head>
+<body>
+    <div class="page-wrap">
+        <header class="header" ng-controller="RedirectCtrl">
+            <div class="header_inner">
+                <h1 class="logo">
+                    <a href="" ng-click="Logo()">JW MARRIOTT.<br>Absheron<br>Baku</a>
+                </h1>
+                <div class="location-info">
+                    <span>
+						<big>Inside</big><br>
+						the hotel
+					</span>
+                </div>
+                <div class="main-navigation">
+                    <ul>
+                        <li class="__active"><a href="" ng-click="Logo()">Make request</a></li>
+                        <li class="__last"><a href="" ng-click="MyRequest()">My request</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <div class="page">
+            <div class="page_inner">
+                <div class="requests">
+                    <div class="requests_inner __style-1">
+                        <div class="requests_label">Choose Request(s) you are not satisfied with to report</div>
+                        <form action="">
+                            <ul class="grid">
+                                <li class="request __in-progress">
+                                    <div class="request_head">
+                                        <div class="request_title">
+                                            <div class="request_name">
+                                                <div class="field">
+                                                    <div class="field-checkbox">
+                                                        <input type="checkbox" name="request" id="book-meeting-room" value="BookAmeetingRoom">
+                                                        <label for="book-meeting-room"><span class="icon __checkbox"></span>Lorem ipsum dolor Lorem ipsum</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="request_status">Not started</div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="request __in-progress">
+                                    <div class="request_head">
+                                        <div class="request_title">
+                                            <div class="request_name">
+                                                <div class="field">
+                                                    <div class="field-checkbox">
+                                                        <input type="checkbox" name="request" id="book-meeting-room-2" value="BookAmeetingRoom">
+                                                        <label for="book-meeting-room-2"><span class="icon __checkbox"></span>Lorem ipsum dolor</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="request_status">Not started</div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="request __in-progress">
+                                    <div class="request_head">
+                                        <div class="request_title">
+                                            <div class="request_name">
+                                                <div class="field">
+                                                    <div class="field-checkbox">
+                                                        <input type="checkbox" name="request" id="book-meeting-room-3" value="BookAmeetingRoom">
+                                                        <label for="book-meeting-room-3"><span class="icon __checkbox"></span>Lorem ipsum dolor.</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="request_status">Not started</div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="request __in-progress">
+                                    <div class="request_head">
+                                        <div class="request_title">
+                                            <div class="request_name">
+                                                <div class="field">
+                                                    <div class="field-checkbox">
+                                                        <input type="checkbox" name="request" id="book-meeting-room-4" value="BookAmeetingRoom">
+                                                        <label for="book-meeting-room-4"><span class="icon __checkbox"></span>Ut enim ad minim veniam.</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="request_status">Not started</div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="request __in-progress">
+                                    <div class="request_head">
+                                        <div class="request_title">
+                                            <div class="request_name">
+                                                <div class="field">
+                                                    <div class="field-checkbox">
+                                                        <input type="checkbox" name="request" id="book-meeting-room-5" value="BookAmeetingRoom">
+                                                        <label for="book-meeting-room-5"><span class="icon __checkbox"></span>Ut enim ad minim veniam.</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="request_status">Not started</div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="additional-info_form">
+                                <div class="fields">
+                                    <div class="field_label">
+                                        <label for="additional-message">Any additional information:</label><span class="max-symbols"><span class="symbols-limit">180</span> symbols</span>
+                                        <div class="field_content">
+                                            <textarea name="" id="additional-message" class="__limit" cols="30" rows="10" maxlength="180"></textarea>
+                                        </div>
+                                        <button class="button __medium __white-grey __style-1">Send</button>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+        <script src="javascript/jquery-1.11.0.min.js"></script>
+        <script src="javascript/jquery.timepicker.js"></script>
+        <script src="javascript/bootstrap-datepicker.js"></script>
+        <script src="javascript/jquery.fancybox.js"></script>
+        <script src="javascript/jquery.fancybox.pack.js"></script>
+        <script src="javascript/jquery.core-ui-select.js"></script>
+        <script src="javascript/scripts.js"></script>
+</body>
+</html>

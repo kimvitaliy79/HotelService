@@ -1,0 +1,168 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	
+    <script src="javascript/angular.js"></script>
+    <!--<script src="javascript/angular-resource.min.js"></script>-->
+    <title>Marriot</title>
+    <script type="text/javascript">
+
+        //$(function () {           
+        //    $("#lang").coreUISelect();
+
+        //});
+        angular.module("index", []).controller('RedirectCtrl',
+        function ($scope, $window) {
+
+            $scope.InsideAYS = function () {
+                //var lang = $scope.selectLang;
+                $window.open("/InsideAYS/main.html", '_self');
+            }
+            $scope.OutsideAYS = function () {
+                //var lang = $scope.selectLang;
+                $window.open("/OutsideAYS/main.html", '_self');
+            }
+            $scope.MyRequest = function () {
+                //var lang = $scope.selectLang;
+                $window.open("/MyRequests/my-request.html", '_self');
+            }
+            //$scope.ReportToMng = function () {
+            //    //var lang = $scope.selectLang;
+            //    $window.open("report-to-manager.html", '_self');
+            //}
+            //$scope.Logo = function () {
+            //    $window.open("/index.html", '_self');
+            //}           
+            $scope.languages = [
+              { name: 'English', value: 'english' },
+              { name: 'Russian', value: 'russian' },
+              { name: 'Azerbaycan', value: 'azerbaycan' },
+              { name: 'Deutsch', value: 'deutsch' },
+              { name: 'Français', value: 'français' }
+            ];
+            $scope.selectLang = $scope.languages[0].value;
+            //localStorage.setItem('curLang', 'russian');
+        })
+
+        angular.element(document).ready(function () {
+            var myDiv2 = document.getElementById("index");
+            angular.bootstrap(myDiv2, ["index"]);
+        });
+
+    </script>
+</head>
+<body>
+
+    <div class="page-wrap" id="index" ng-controller="RedirectCtrl">
+        <header class="header">
+            <div class="header_inner">
+                <h1 class="logo secondary--style">
+                    <a href="#">JW MARRIOTT.<br>Absheron<br>Baku</a>
+                </h1>
+                <div class="main-navigation">
+                    <ul>
+                        <li><a href="#">Make request</a></li>
+                        <li class="__last"><a href="" ng-click="MyRequest()">My request</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <div class="page">
+            <div class="page_inner __style-1">
+                <div class="page_title">
+                    <h2>JW MARRIOTT.<br>Absheron<br>Baku</h2>
+                </div>
+                <div class="service-navigation">
+                    <ul>
+                        <li class="__inside">
+                            <a href="#" ng-click="InsideAYS()">
+                                <big>Inside</big>
+                                <br>
+                                the hotel
+                            </a>
+                        </li>
+                        <li class="__outside">
+                            <a href="#" ng-click="OutsideAYS()">
+                                <big>outside</big>
+                                <br>
+                                the hotel
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="language">
+                    <form action="#" class="language_form">
+                        <div class="field">
+                            <div class="field_label">Select language</div>
+                            <div class="field_content">
+                                <div class="field-select">
+                                    <select name="language" class="select-controller" ng-model="selectLang" ng-options="option.value as option.name for option in languages">
+                                        <!--<option value="English" selected="selected">English</option>
+                                        <option value="Russian">Русский</option>
+                                        <option value="Azerbaycan">Azerbaycan</option>
+                                        <option value="Deutsch">Deutsch</option>
+                                        <option value="Français">Français</option>
+                                        <option value="中国的">中国的</option>
+                                        <option value="한국의">한국의</option>
+                                        <option value="日本の">日本の</option>
+                                        <option value="العربية">العربية</option>
+                                        <option value="עברית">עברית</option>-->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+          <footer class="footer">
+            <div class="footer_inner">
+                <div class="footer_navigation"> 
+                    <ul>
+                        <li class="__personal">
+                            <a class="popup-controller" href="/InsideAYS/preferences.html">
+                                <span>personal Preferences</span>
+                            </a>
+                        </li>
+                        <li class="__switch">
+                            <a href="/OutsideAYS/main.html">
+                                <span>switch to outside</span>
+                            </a>
+                        </li>
+                        <li class="__emergency">
+                            <a href="javascript:void(0)">Emergency button</a>
+                            <ul class="sub-menu">
+                                <li><a class="popup-controller" href="/InsideAYS/doctor-service.html">Medical service</a></li>
+                                <li><a href="#">Call operator</a></li>
+                                <li><a class="service-popup-controller" href="/InsideAYS/ops.html">Help me, i’m lost</a></li>
+                                <li><a href="report-to-manager.html">Report to Manager on Duty</a></li>
+                                <li><a href="report-to-manager.html">Report to General Manager</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </footer>
+
+        <link rel="stylesheet" href="/Content/styles.css">
+        <link rel="stylesheet" href="/Content/core-ui-select.css">
+        <link rel="stylesheet" href="/Content/jquery.timepicker.css">
+        <link rel="stylesheet" href="/Content/jquery.scrollpane.css">
+        <link rel="stylesheet" href="/Content/bootstrap-datepicker.css">
+        <link rel="stylesheet" href="/Content/jquery.fancybox.css">
+        <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,500,700">
+
+        <script src="/javascript/jquery-1.11.0.min.js"></script>
+        <script src="/javascript/jquery.timepicker.js"></script>
+        <script src="/javascript/bootstrap-datepicker.js"></script>
+        <script src="/javascript/jquery.fancybox.js"></script>
+        <script src="/javascript/jquery.fancybox.pack.js"></script>
+        <script src="/javascript/jquery.core-ui-select.js"></script>
+        <script src="/javascript/scripts.js"></script>
+
+</body>
+</html>

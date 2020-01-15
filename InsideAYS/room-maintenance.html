@@ -1,0 +1,111 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+
+    angular.module('roomMaintenans', ['ngResource']).controller("RoomMaintenansCtrl",
+         function ($scope, $resource) {
+             $scope.RoomMaintenans = {
+                 roomNo: '1', lastName: 'Bob', request: ''
+             };
+
+
+             angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+             $scope.limitClass = 'symbols-limit';
+             $scope.maxsymbolsClass = "max-symbols";
+             $scope.requestClass = "text-field __limit";
+             $scope.isErrorInLength = false;
+
+             $scope.validate = function (validateItem) {
+                 if (angular.isDefined(validateItem)) {
+                     if (validateItem.length >= 180) {
+                         $scope.limitClass = 'symbols-limit __warning';
+                         $scope.maxsymbolsClass = "max-symbols __warning";
+                         $scope.isErrorInLength = true;
+                     }
+                     else {
+                         $scope.limitClass = 'symbols-limit';
+                         $scope.maxsymbolsClass = "max-symbols";
+                         $scope.isErrorInLength = false;
+                     }
+                 }
+             }
+
+             $scope.sendRequest = function () {               
+                 
+                 if (!$scope.roomMaintainceForm.request.$valid) {
+                     $scope.requestClass = "text-field __limit __warning";
+                 }
+                 else {
+                     if ($scope.maxsymbolsClass == "max-symbols __warning")
+                         return;
+
+                     var postData = {
+                         request_type: "inside",
+                         request: {
+                             request_form: "room_maintenance",
+                             room_number: "",
+                             last_name: "",
+                             send_date: "",
+                             request_body: {
+                                 specify_your_request: ""
+                             }
+                         }
+                     }
+
+                     postData.request.room_number = $scope.RoomMaintenans.roomNo;
+                     postData.request.last_name = $scope.RoomMaintenans.lastName;
+                     postData.request.send_date = Date.parse(new Date());
+                     postData.request.request_body.specify_your_request = $scope.RoomMaintenans.request;
+
+                     $.fancybox.close();
+                     $.fancybox.open([{ type: 'ajax', href: '/InsideAYS/successMsg.html' }], {
+                         padding: 0,
+                         scrolling: 'visible'
+                     });
+                 }
+
+                 angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+
+             }
+         });
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__room-maintenance'), ['roomMaintenans']);       
+    });
+    //@ sourceURL=roomMaintaince.js 
+</script>
+
+<div class="ui-popup __style-3" id="popup__room-maintenance" ng-controller="RoomMaintenansCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__room-maintenance_ic">Room Maintenance</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="roomMaintainceForm" novalidate  class="css-form">
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">Specify your request:</label><span class="max-symbols"><span class="symbols-limit">180</span> symbols</span>
+                    </div>
+                    <div class="field_content">
+                          <input type="text" ng-class="requestClass" placeholder="My TV is not working" maxlength="180" name="request" ng-model="RoomMaintenans.request" required ng-change="validate(RoomMaintenans.request)">
+                          <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                     </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field __style-1">
+                    <div class="field_label">
+                        <label for="">Your information:</label>
+                    </div>
+                    <div class="field_content  __style-1">
+                        <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="RoomMaintenans.roomNo">
+                        <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="RoomMaintenans.lastName">
+                         <span class="warning-info" id="errorsMsg" ng-show="roomMaintainceForm.request.$error.required">*Fields required to fill</span>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

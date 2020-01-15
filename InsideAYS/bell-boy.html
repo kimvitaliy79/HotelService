@@ -1,0 +1,138 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('bellBoy', ['ngResource']).controller("BellBoyCtrl",
+ function ($scope, $resource) {
+     $scope.BellBoy = {
+         roomNo: '1', lastName: 'Bob', questPreference: "", IsCall: false
+     };
+
+     angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+     $scope.limitClass = 'symbols-limit';
+     $scope.maxsymbolsClass = "max-symbols";
+     $scope.guestPrefClass = "text-field __limit";
+     $scope.isErrorInLength = false;
+
+     $scope.CallBellBoy = function (select) {
+         $scope.BellBoy.IsCall = select;
+     }
+
+     $scope.sendRequest = function () {         
+
+         if (!$scope.bellBoyForm.preference.$valid) {
+             $scope.guestPrefClass = "text-field __limit __warning";
+         }
+         else {
+             if ($scope.maxsymbolsClass == "max-symbols __warning")
+                 return;
+
+             //$scope.BellBoy = {
+             //    roomNo: '1', lastName: 'Bob', questPreference: '', IsCall: false
+             //};
+             var postData = {
+                 request_type: "inside",
+                 request: {
+                     request_form: "bell_boy",
+                     room_number: "",
+                     last_name: "",
+                     send_date: "",
+                     request_body: {                        
+                     }
+                 }
+             }
+
+             postData.request.room_number = $scope.BellBoy.roomNo;
+             postData.request.last_name = $scope.BellBoy.lastName;           
+             postData.request.send_date = Date.parse(new Date());
+
+             if ($scope.BellBoy.IsCall) {
+                 postData.request.request_body["call_bell_boy"] = "yes";              
+             }
+
+             if ($scope.BellBoy.questPreference!="") {
+                 postData.request.request_body["quest_preference"] = $scope.BellBoy.questPreference;
+             }
+
+             $.fancybox.close();
+             $.fancybox.open([{ type: 'ajax',  href: '/InsideAYS/successMsg.html' }], {
+                 padding: 0,
+                 openEffect: 'none',
+                 openSpeed: 100,
+                 scrolling: 'visible'
+             });
+         }
+         angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+     }
+
+     $scope.validate = function (validateItem) {
+         if (angular.isDefined(validateItem)) {
+             if (validateItem.length >= 180) {
+                 $scope.limitClass = 'symbols-limit __warning';
+                 $scope.maxsymbolsClass = "max-symbols __warning";
+                 $scope.isErrorInLength = true;
+             }
+             else {
+                 $scope.limitClass = 'symbols-limit';
+                 $scope.maxsymbolsClass = "max-symbols";
+                 $scope.isErrorInLength = false;
+             }
+         }
+     }
+ });
+
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__bell-boy'), ['bellBoy']);
+    });
+
+    //@ sourceURL=bellBoy.js
+</script>
+
+<div class="ui-popup __style-3" id="popup__bell-boy" ng-controller="BellBoyCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__bell-boy_ic">Bell Boy</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="bellBoyForm" novalidate class="css-form">
+                <div ng-switch="BellBoy.IsCall">
+                    <div ng-switch-when="false">
+                        <div class="field">
+                            <button class="button __large __white-grey" ng-click="CallBellBoy(true)">Call Bell Boy</button>
+                        </div>
+                    </div>
+                    <div ng-switch-when="true">
+                        <div class="field">
+                            <button class="button __large __white-grey __style-1" ng-click="CallBellBoy(false)">Call Bell Boy</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">Guest Preference:</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" ng-class="guestPrefClass" placeholder="Pick Up my Luggage" name="preference" maxlength="180" ng-model="BellBoy.questPreference" ng-change="validate(BellBoy.questPreference)" required>
+                        <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field __style-1">
+                    <div class="field_label">
+                        <label for="">Your information:</label>
+                    </div>
+                    <div class="field_content  __style-1">
+                        <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="BellBoy.roomNo">
+                        <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="BellBoy.lastName">
+                         <span class="warning-info" id="errorsMsg" ng-show="bellBoyForm.preference.$error.required">*Field required to fill</span>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+
+                    <button class="button __black __medium" ng-click="sendRequest()" type="button">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

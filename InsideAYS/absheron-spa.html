@@ -1,0 +1,282 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+
+    angular.module('absheronSPA', ['ngResource']).controller("AbsheronSPACtrl",
+          function ($scope, $resource, $timeout) {
+              $scope.SPA = {
+                  additionInfo: 'Test info', roomNo: '1', lastName: 'Bob', persons: 1, SPAserviceValue: '',date:'',time:'',
+                  SPAserviceList: SPAserviceList = [
+                    //{ name: 'Bodyscrab', value: 'bodyscrab' },
+                    //{ name: 'Body wrap', value: 'bodyWrap' },
+                    //{ name: 'Facials', value: 'facials' }
+                  ]
+              };
+
+              $resource('http://hotels.modera.co/api/catalogs/:request_type/spas', { request_type: 'inside' }).get(null, function (u, getResponseHeaders) {
+                  // alert(u);
+                  $scope.SPA.SPAserviceList = u.spas;
+                  $scope.SPA.SPAserviceValue = $scope.SPA.SPAserviceList[0].id;
+                  $timeout(function () {
+                      //if ($scope.BookMeeting.conferenceList.length > 0) {
+                      $("#ddlSPAsList").coreUISelect();
+                      //promise.cancel();
+                      //}                     
+                  }, 1, false);
+              });
+
+            
+
+              angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+              angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+              $scope.limitClass = 'symbols-limit';
+              $scope.maxsymbolsClass = "max-symbols";
+              $scope.detailsClass = "text-field";
+              $scope.isOnlyNumber = false;
+              $scope.isErrorInLength = false;
+
+              var d = new Date();
+              var weekDay = d.getDay();
+              var month = d.getMonth();
+              var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+              var weekArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+              var day = d.getDate();
+              $scope.SPA.date = weekArray[weekDay] + " " + monthArray[month] + " " + day;
+
+              var hh = d.getHours();
+              var m = d.getMinutes();
+              var dd = "AM";
+              var h = hh;
+              if (h >= 12) {
+                  h = hh - 12;
+                  dd = "PM";
+              }
+              if (h == 0) {
+                  h = 12;
+              }
+              $scope.SPA.time = h + ":" + m + " " + dd;
+
+              $scope.validate = function (validateItem) {
+                  if (angular.isDefined(validateItem)) {
+                      if (validateItem.length >= 180) {
+                          $scope.limitClass = 'symbols-limit __warning';
+                          $scope.maxsymbolsClass = "max-symbols __warning";
+                          $scope.isErrorInLength = true;
+                      }
+                      else {
+                          $scope.limitClass = 'symbols-limit';
+                          $scope.maxsymbolsClass = "max-symbols";
+                          $scope.isErrorInLength = false;
+                      }
+                  }
+              }
+
+              $scope.PlusDate = function (input) {
+                  var arrayDates = $scope.SPA.date.split(" ");
+                  var date = parseInt(arrayDates[2]) + 1;
+                  $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+              }
+
+              $scope.MinusDate = function () {
+                  var arrayDates = $scope.SPA.date.split(" ");
+                  var date = parseInt(arrayDates[2]) - 1;
+                  $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+              }
+
+              $scope.PlusTime = function () {
+
+                  var arrayTime = $scope.SPA.time.split(":");
+                  var hours = parseInt(arrayTime[0]) + 1;
+                  var amPM = arrayTime[1].split(" ")[1];
+
+                  if (hours >= 12) {
+                      hours = hours - 12;
+
+                      if (amPM == 'pm')
+                          amPM = "am";
+                      else
+                          amPM = "pm";
+                  }
+
+                  var minutes = arrayTime[1].split(" ")[0];
+                  $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+              }
+
+              $scope.MinusTime = function () {
+                  var arrayTime = $scope.SPA.time.split(":");
+                  var hours = parseInt(arrayTime[0]) - 1;
+                  var amPM = arrayTime[1].split(" ")[1];
+
+                  if (hours == -1) {
+                      hours = "11";
+                      if (amPM == 'pm')
+                          amPM = "am";
+                      else
+                          amPM = "pm";
+                  }
+
+                  var minutes = arrayTime[1].split(" ")[0];
+                  $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+              }
+
+              $scope.sendRequest = function () {              
+
+                  angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+
+                  if ($scope.maxsymbolsClass == "max-symbols __warning" || $scope.SPAform.persons.$invalid)
+                      return;
+
+                  var postData = {
+                      request_type: "inside",
+                      request: {
+                          request_form: "absheron_spa",
+                          room_number: "",
+                          last_name: "",
+                          send_date: "",
+                          request_body: {
+                              spa: "",
+                              additional_information: "",
+                              date_and_time: "",
+                              persons:1
+                          }
+                      }
+                  }
+
+                  postData.request.room_number = $scope.SPA.roomNo;
+                  postData.request.last_name = $scope.SPA.lastName;
+                  postData.request.send_date = Date.parse(new Date());
+                  postData.request.request_body.date_and_time = $scope.SPA.date + " " + $scope.SPA.time;
+                  postData.request.request_body.additional_information = $scope.SPA.additionInfo;
+                  postData.request.request_body.spa = $scope.SPA.SPAserviceValue;
+
+                  $.fancybox.close();
+                  $.fancybox.open([{ type: 'ajax', href: '/InsideAYS/successMsg.html' }], {
+                      padding: 0,
+                      scrolling: 'visible'
+                  });
+
+                 
+              }
+          }
+      )
+    .directive('numbersOnly', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, elm, attrs, ctrl) {
+                elm.on('keydown', function (event) {
+                    // Allow: backspace, delete, tab, escape, enter and .
+                    if ($.inArray(event.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                        // Allow: Ctrl+A
+                        (event.keyCode == 65 && event.ctrlKey === true) ||
+                        // Allow: home, end, left, right
+                        (event.keyCode >= 35 && event.keyCode <= 39)) {
+                        // let it happen, don't do anything                        
+                        return;
+                    }
+                    else {
+                        // Ensure that it is a number and stop the keypress
+                        if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                            event.preventDefault();
+                            angular.element(document.getElementById('errorInPersons')).removeAttr('style');
+                        }
+                        else {
+                            angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+                        }
+                    }
+
+                });
+            }
+        }
+    });
+
+
+    angular.element(document).ready(function () {
+        var myDiv2 = document.getElementById('popup__absheron-spa');   //"popup__room-service-order" "servOrder"
+        angular.bootstrap(myDiv2, ['absheronSPA']);       
+
+        $('.time-picker').timepicker({
+            'step': 15,
+            'timeFormat': 'g:i a'
+        });
+
+        $('.date-picker').datepicker({
+            'format': 'D M d',
+            'autoclose': true
+        });
+    });
+    //@ sourceURL=SPA.js
+</script>
+
+   <div class="ui-popup __style-2" id="popup__absheron-spa" ng-controller="AbsheronSPACtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__absheron-spa-ic">ABSHERON SPA</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="SPAform" novalidate class="css-form">
+                <div class="form_inner">
+                    <div class="form_column __left">
+                        <div class="field">
+                            <div class="field_label">Services, Treatments&Amenities:</div>
+                            <div class="field_content">
+                                <div class="field-select">
+                                    <select name="" id="ddlSPAsList" ng-options="option.id as option.name for option in SPA.SPAserviceList" ng-model="SPA.SPAserviceValue"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">Date\Time:</div>
+                            <div class="field_content">
+                                  <div class="fields __style-1">
+                                   <div class="icons-group __style-1">
+                                        <span class="icon __arrow __style-1" ng-click="PlusDate()"></span>
+                                        <span class="icon __arrow" ng-click="MinusDate()"></span>
+                                      </div> 
+                                    <input type="text" class="text-field __first date-picker" ng-model="SPA.date">                                    
+                                    <input type="text" class="text-field time-picker" ng-model="SPA.time">
+                                    <div class="icons-group">
+                                    <span class="icon __arrow __style-1" ng-click="PlusTime()" ></span>
+                                    <span class="icon __arrow" ng-click="MinusTime()"></span>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_content">
+                                <div class="field-simple-inline">
+                                    <label for="">Persons:</label>                                    
+                                     <input type="text" class="text-field __width-S __aligner" name="persons" numbers-only ng-model="SPA.persons" required>
+                                    <span class="warning-info" id="errorInPersons" >*Only integer</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_column __right">
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Additional Information:</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                            </div>
+                            <div class="field_content">                            
+                                  <input type="text" class="text-field __limit" maxlength="180" ng-model="SPA.additionInfo" ng-change="validate(SPA.additionInfo)">
+                                  <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Your information:</label>
+                            </div>
+                            <div class="field_content __style-1">
+                                <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="SPA.roomNo">
+                                <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="SPA.lastName">                                
+                                 <span class="warning-info" id="errorsMsg" ng-show="SPAform.persons.$invalid">*Fields required to fill</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

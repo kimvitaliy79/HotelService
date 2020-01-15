@@ -1,0 +1,222 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('airportPickUp', ['ngResource']).controller("AirportPickUpCtrl",
+    function ($scope, $resource) {
+        $scope.AirportPickUp = {
+            roomNo: '1', lastName: 'Bob', additionInfo: '', flightDetails: '', time:'', date:''
+        };
+
+        angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+
+        $scope.limitClass = 'symbols-limit';
+        $scope.maxsymbolsClass = "max-symbols";
+        $scope.detailsClass = "text-field";
+        $scope.isOnlyNumber = false;
+        $scope.isErrorInLength = false;
+
+        var d = new Date();
+        var weekDay = d.getDay();
+        var month = d.getMonth();
+        var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        var weekArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        var day = d.getDate();
+        $scope.AirportPickUp.date = weekArray[weekDay] + " " + monthArray[month] + " " + day;
+
+        var hh = d.getHours();
+        var m = d.getMinutes();
+        var dd = "AM";
+        var h = hh;
+        if (h >= 12) {
+            h = hh - 12;
+            dd = "PM";
+        }
+        if (h == 0) {
+            h = 12;
+        }
+        $scope.AirportPickUp.time = h + ":" + m + " " + dd;
+
+        $scope.validate = function (validateItem) {
+            if (angular.isDefined(validateItem)) {
+                if (validateItem.length >= 180) {
+                    $scope.limitClass = 'symbols-limit __warning';
+                    $scope.maxsymbolsClass = "max-symbols __warning";
+                    $scope.isErrorInLength = true;
+                }
+                else {
+                    $scope.limitClass = 'symbols-limit';
+                    $scope.maxsymbolsClass = "max-symbols";
+                    $scope.isErrorInLength = false;
+                }
+            }
+        }
+
+        $scope.PlusDate = function (input) {
+            var arrayDates = $scope.AirportPickUp.date.split(" ");
+            var date = parseInt(arrayDates[2]) + 1;
+            $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+        }
+
+        $scope.MinusDate = function () {
+            var arrayDates = $scope.AirportPickUp.date.split(" ");
+            var date = parseInt(arrayDates[2]) - 1;
+            $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+        }
+
+        $scope.PlusTime = function () {
+
+            var arrayTime = $scope.AirportPickUp.time.split(":");
+            var hours = parseInt(arrayTime[0]) + 1;
+            var amPM = arrayTime[1].split(" ")[1];
+
+            if (hours >= 12) {
+                hours = hours - 12;
+
+                if (amPM == 'pm')
+                    amPM = "am";
+                else
+                    amPM = "pm";
+            }
+
+            var minutes = arrayTime[1].split(" ")[0];
+            $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+        }
+
+        $scope.MinusTime = function () {
+            var arrayTime = $scope.AirportPickUp.time.split(":");
+            var hours = parseInt(arrayTime[0]) - 1;
+            var amPM = arrayTime[1].split(" ")[1];
+
+            if (hours == -1) {
+                hours = "11";
+                if (amPM == 'pm')
+                    amPM = "am";
+                else
+                    amPM = "pm";
+            }
+
+            var minutes = arrayTime[1].split(" ")[0];
+            $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+        }
+
+        $scope.sendRequest = function () {        
+
+            if (!$scope.airportPickUpForm.flightDetails.$error.required) {
+
+                if ($scope.maxsymbolsClass == "max-symbols __warning")
+                    return;
+
+                var postData = {
+                    request_type: "inside",
+                    request: {
+                        request_form: "airport_pick_up",
+                        room_number: "",
+                        last_name: "",
+                        send_date: "",
+                        request_body: {
+                            flight_date: "",
+                            flight_details: "",
+                            additional_information: ""
+                        }
+                    }
+                }
+
+                postData.request.room_number = $scope.AirportPickUp.roomNo;
+                postData.request.last_name = $scope.AirportPickUp.lastName;
+                postData.request.send_date = Date.parse(new Date());
+                postData.request.request_body.flight_date = $scope.AirportPickUp.date + " " + $scope.AirportPickUp.time;
+                postData.request.request_body.flight_details = $scope.AirportPickUp.flightDetails;
+                postData.request.request_body.additional_information = $scope.AirportPickUp.additionInfo;
+
+                $.fancybox.close();
+                $.fancybox.open([{ type: 'ajax', href: '/InsideAYS/successMsg.html' }], {
+                    padding: 0,
+                    scrolling: 'visible'
+                });
+            }
+
+            if ($scope.airportPickUpForm.flightDetails.$error.required)
+                $scope.detailsClass = "text-field __warning";
+
+
+            angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+
+        }
+    });
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__airport-pickup'), ['airportPickUp']); 
+
+        $('.time-picker').timepicker({
+            'step': 15,
+            'timeFormat': 'g:i a'
+        });
+
+        $('.date-picker').datepicker({
+            'format': 'D M d',
+            'autoclose': true
+        });
+    });
+    //@ sourceURL=airportPickUp.js
+</script>
+
+<div class="ui-popup __style-3" id="popup__airport-pickup" ng-controller="AirportPickUpCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__airport-pickup_ic">Airport Pick Up</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="airportPickUpForm" novalidate class="css-form">
+                <div class="field">
+                    <div class="field_label">Flight Date:</div>
+                    <div class="field_content">
+                        <div class="fields __style-1">
+                           <div class="icons-group __style-1">
+                                        <span class="icon __arrow __style-1" ng-click="PlusDate()"></span>
+                                        <span class="icon __arrow" ng-click="MinusDate()"></span>
+                                      </div> 
+                                    <input type="text" class="text-field __first date-picker" ng-model="AirportPickUp.date">                                    
+                                    <input type="text" class="text-field time-picker" ng-model="AirportPickUp.time">
+                                    <div class="icons-group">
+                                    <span class="icon __arrow __style-1" ng-click="PlusTime()" ></span>
+                                    <span class="icon __arrow" ng-click="MinusTime()"></span>
+                                    </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">Flight Details:</label>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" ng-class="detailsClass" name="flightDetails" ng-model="AirportPickUp.flightDetails" required>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">Additional Information:</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                    </div>
+                    <div class="field_content">
+                         <input type="text" class="text-field __limit" maxlength="180" ng-model="AirportPickUp.additionInfo" ng-change="validate(AirportPickUp.additionInfo)">
+                         <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field __style-1">
+                    <div class="field_label">
+                        <label for="">Your information:</label>
+                    </div>
+                    <div class="field_content  __style-1">
+                        <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="AirportPickUp.roomNo">
+                        <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="AirportPickUp.lastName">
+                        <span class="warning-info" id="errorsMsg" ng-show="airportPickUpForm.flightDetails.$error.required">*Fields required to fill</span>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

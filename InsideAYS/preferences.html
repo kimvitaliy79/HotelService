@@ -1,0 +1,134 @@
+<script type="text/javascript">
+    angular.module('preference', []).controller("PreferenceCtrl", function ($scope) {
+
+        $scope.Preference = {
+                additionInfo: '', smoking: '', alergicTo: '', dontEat: ''     
+        };
+
+        $scope.radioWarningClass = "icon __radio";
+        $scope.dontEatClass = "text-field";
+        $scope.allergicClass = "text-field";
+        $scope.limitClass = 'symbols-limit';
+        $scope.maxsymbolsClass = "max-symbols";
+        angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+        angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+        $scope.showSmoking = false;
+        $scope.isErrorInLength = false;
+
+        $scope.validate = function (validateItem) {
+            if (angular.isDefined(validateItem)) {
+                if (validateItem.length >= 180) {
+                    $scope.limitClass = 'symbols-limit __warning';
+                    $scope.maxsymbolsClass = "max-symbols __warning";
+                    $scope.isErrorInLength = true;
+                }
+                else {
+                    $scope.limitClass = 'symbols-limit';
+                    $scope.maxsymbolsClass = "max-symbols";
+                    $scope.isErrorInLength = false;
+                }
+            }
+        }
+
+        $scope.changeRadio = function () {
+            if ($scope.radioWarningClass == "icon __radio __warning") {
+                $scope.radioWarningClass = "icon __radio";
+                $scope.showSmoking = false;
+            }
+        }
+
+        $scope.sendRequest=function()
+        {
+            if ($scope.maxsymbolsClass == "max-symbols __warning")
+                return;
+
+            if ($scope.preferenceForm.dontEat.$invalid)
+                $scope.dontEatClass = "text-field __warning";
+
+            if ($scope.preferenceForm.allergic.$invalid)
+                $scope.allergicClass = "text-field __warning";             
+           
+
+            if ($scope.preferenceForm.smokingYes.$invalid && $scope.preferenceForm.smokingNo.$invalid) {
+                $scope.radioWarningClass = "icon __radio __warning";
+                $scope.showSmoking = true;
+            }
+
+            if (!$scope.preferenceForm.dontEat.$invalid && !$scope.preferenceForm.allergic.$invalid
+                && !$scope.preferenceForm.smokingYes.$invalid
+                && !$scope.preferenceForm.smokingNo.$invalid)  
+                $.fancybox.close();
+            else
+                angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+        }
+
+    });
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('popup__preferences'), ['preference']);      
+
+    });
+    //@ sourceURL=preference.js
+</script>
+
+<div class="ui-popup __style-1" id="popup__preferences" ng-controller="PreferenceCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4>Enter my preferences</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="preferenceForm" novalidate class="css-form">
+                <div class="field">
+                    <div class="field_label">
+                        <label for="">I'm allergic to:</label>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" ng-class="allergicClass" name="allergic" ng-model="Preference.alergicTo" required>
+                    </div>
+                </div>
+                <div class="field">            
+                    <div class="field_label">
+                        <label for="">I don’t eat:</label>
+                    </div>
+                    <div class="field_content">
+                        <input type="text" ng-class="dontEatClass" name="dontEat" ng-model="Preference.dontEat" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field_content">
+                        <div class="fields_title __style-1">Smoking:</div>
+                        <div class="radio-inline">
+                             <div class="field-radio">
+                                        <input type="radio" name="smokingYes" id="smoking-yes-rr" ng-change="changeRadio()" ng-model="Preference.smoking" value="yes" required>
+                                        <label for="smoking-yes-rr"><span ng-class="radioWarningClass"></span>Yes</label>
+                                    </div>
+                                    <div class="field-radio __last">
+                                        <input type="radio" name="smokingNo" id="smoking-no-rr" ng-change="changeRadio()"  ng-model="Preference.smoking" value="no" required>
+                                        <label for="smoking-no-rr"><span ng-class="radioWarningClass"></span>No</label>
+                                    </div>
+                        </div>
+                         <span class="warning-info" ng-show="showSmoking" >Choose smoking preference</span>
+                    </div>
+                </div>
+                <div class="horizontal-separator __style-1"></div>
+                <div class="field __style-1">
+                    <div class="fields">
+                        <div class="field_label">
+                            <label for="">Additional information:</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                        </div>
+                        <div class="field_content">                          
+                            <input type="text" class="text-field __limit" placeholder="" maxlength="180" ng-model="Preference.additionInfo" ng-change="validate(Preference.additionInfo)">
+                            <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+
+                            <span class="warning-info" id="errorsMsg" ng-show="preferenceForm.dontEat.$invalid || preferenceForm.allergic.$invalid
+                             || preferenceForm.smokingYes.$invalid || preferenceForm.smokingNo.$invalid">*Fields required to fill</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>  

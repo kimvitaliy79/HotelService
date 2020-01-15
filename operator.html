@@ -1,0 +1,792 @@
+<!doctype html>
+<!--[if lt IE 9]><html class="no-js lt-ie9"> <![endif]-->
+<html>
+<head>
+	<meta charset="UTF-8">
+	<!--[if lt IE 9]>
+		<script src="js/html5shiv.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" href="Content/operatorStyles.css">
+	<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,500,700">
+    <script src="javascript/jquery-1.11.0.min.js"></script>
+    <script src="/javascript/angular.js"></script>
+
+    <script type="text/javascript">       
+
+        angular.module('operatorSide', []).controller("RequestsCtrl",
+        function ($scope, $filter) {
+            $scope.requestList = [
+              {
+                  id: 0, name: 'Guest Preference', status: 'Completed', sendTime: '1 min ago', number: 0, isExpanded:false , isCompleted: true,
+                  roomNo: 152, questName: 'Bob', serviceType: 'Inside AYS', isNew: false, sendDate: new Date('02/02/2014')
+                  ,requestDetails: requestDetails = [],
+                  talkHistorys: talkHistorys = []
+              },   
+              {
+                  id: 1, name: 'Book a Meeting Room', status: 'In Progress', sendTime: '2 min ago', number: 1, isExpanded: false, isCompleted: false,
+                  roomNo: 235, questName: 'Bill', serviceType: 'Inside AYS', isNew: false, sendDate: new Date('03/03/2014')
+                   , requestDetails: requestDetails = [],
+                  talkHistorys: talkHistorys = []
+              },
+              {
+                  id: 2, name: 'Restaurant Reservations', status: 'Pending', sendTime: '3 min ago', number: 2, isExpanded: false, isCompleted: false,
+                  roomNo: 3, questName: 'Dolly', serviceType: 'Outside AYS', isNew: true, sendDate: new Date('04/04/2014')
+                   , requestDetails: requestDetails = [],
+                  talkHistorys: talkHistorys = []
+              },
+               {
+                   id: 3, name: 'Call Taxi', status: 'Pending', sendTime: '3 min ago', number: 2, isExpanded:false, isCompleted: false,
+                   roomNo: 4, questName: 'Dodge', serviceType: 'Outside AYS', isNew: true, sendDate: new Date('11/11/2014')
+                    , requestDetails: requestDetails = [],
+                   talkHistorys: talkHistorys = []
+               }
+            ];
+
+
+            $scope.requestListDetails = [
+                {
+                    id: 0,
+                    requestDetails: requestDetails = [{ servName: 'What can I do for you', servText: 'A cup of coffee' },
+                                                      { servName: 'Call at your service', servText: 'yes' },
+                                                      { servName: 'Room no', servText: '1' },
+                                                      { servName: 'Last name', servText: 'Bob' }
+                    ],
+                    talkHistorys: talkHistorys = [{ author: 'Client', time: '10 min ago', told: 'Hello' },
+                                                   { author: 'Operator', time: '5 min ago', told: 'I am working' }
+                    ]
+                },
+                {
+                    id: 1,
+                    requestDetails: requestDetails = [
+                                { servName: 'Conference room', servText: 'Amburan' },
+                                { servName: 'Room setup details', servText: 'u-shape' },
+                                { servName: 'Cofe break', servText: 'no' },
+                                { servName: 'Persons', servText: '1' },
+                                { servName: 'Cofe break time', servText: 'Sat mar 09:10 am' },
+                                { servName: 'Persons qty for cofe break', servText: '1' },
+                                { servName: 'Additional information', servText: 'test' },
+                                { servName: 'Room no', servText: '2' },
+                                { servName: 'Last name', servText: 'Betty' }
+                    ],
+                    talkHistorys: talkHistorys = [{ author: 'Client', time: '20 min ago', told: 'hi' },
+                                                  { author: 'Operator', time: '10 min ago', told: 'good morning' }
+                    ]
+                },
+                {
+                    id: 2,
+                    requestDetails: requestDetails = [
+                        { servName: 'Choose one of our restorant', servText: 'JW steak house' },
+                        { servName: 'Meal time ', servText: 'Dinner' },
+                        { servName: 'Smoking preference', servText: 'yes' },
+                        { servName: 'Persons', servText: '2' },
+                        { servName: 'Name for reservation', servText: 'Billy' },
+                        { servName: 'Additional information', servText: 'Hello world' },
+                        { servName: 'Room no', servText: '3' },
+                        { servName: 'Last name', servText: 'Dolly' }
+                    ],
+                    talkHistorys: talkHistorys = [{ author: 'Client', time: '1 min ago', told: 'Test' },
+                                                  { author: 'Operator', time: '2 min ago', told: 'this is test' }
+                    ]
+
+                },
+            {
+                id: 3,
+                requestDetails: requestDetails = [
+                    { servName: 'Pick up time', servText: 'Sat Mar 9 09:10 AM' },
+                    { servName: 'Address', servText: 'hotel mariotte' }
+                ],
+                talkHistorys: talkHistorys = [{ author: 'Client', time: '1 min ago', told: 'Test' },
+                                              { author: 'Operator', time: '2 min ago', told: 'this is test' }
+                ]
+            }]
+
+            $scope.personalPreference={
+                additionInfo: '', smoking: '', alergicTo: '', dontEat: '' 
+            }
+
+            $scope.insideServices = [
+                     { id: 0, servName: 'Hotel Car', selectClass:'' },
+                     { id: 1, servName: 'Guest Preference', selectClass: '' },
+                     { id: 2, servName: 'Entertainment', selectClass: '' },
+                     { id: 3, servName: 'Restaurant Reservations', selectClass: '' },
+                     { id: 4, servName: 'Bell Boy', selectClass: '' },
+                     { id: 5, servName: 'City Tour', selectClass: '' },
+                     { id: 6, servName: 'Check Flight Details', selectClass: '' },
+                     { id: 7, servName: 'Book a Meeting Room', selectClass: '' },
+                     { id: 8, servName: 'Laundry Request', selectClass: '' },
+                     { id: 9, servName: 'Housekeeping Request', selectClass: '' },
+                     { id: 10, servName: 'Room Service Order', selectClass: '' },
+                     { id: 11, servName: 'Room Maintenance', selectClass: '' },
+                     { id: 12, servName: 'Airport Drop', selectClass: '' },
+                     { id: 13, servName: 'Airport Pick Up', selectClass: '' },
+                     { id: 14, servName: 'Wake Up Call', selectClass: '' },
+                     { id: 15, servName: 'ABSHERON SPA', selectClass: '' }
+            ];
+
+            $scope.outsideServices = [
+                     { id: 0, servName: 'Call Taxi', selectClass: '' },
+                     { id: 1, servName: 'Guest Preference', selectClass: '' },
+                     { id: 2, servName: 'Entertainment', selectClass: '' },
+                     { id: 3, servName: 'Restaurant Reservations', selectClass: '' }
+            ];
+
+            $scope.roomList = [
+                //{ roomNo: 1 },
+                //{ roomNo: 2 },
+                //{ roomNo: 3 },
+                //{ roomNo: 4 }
+            ]
+
+           $scope.GetPersonPref = function (request)
+           {
+               //выбрать из сервиса персональные предпочтения по request.id
+               $scope.personalPreference.additionInfo= 'no info';
+               $scope.personalPreference.smoking= 'Yes';
+               $scope.personalPreference.alergicTo = 'cats';
+               $scope.personalPreference.dontEat = 'apples'
+
+               preferenceElem =  $('.personPref_' + request.id).next();
+               if (preferenceElem.is(':visible')) {
+                   preferenceElem.hide()  
+               }
+               else {
+                   preferenceElem.show();
+               }             
+           }
+
+           $scope.EditRoomAndNumber = function (request)
+           {
+               editElem = $('.editRoomAndName_' + request.id).next();
+               if (editElem.is(':visible')) {
+                   editElem.hide()
+               }
+               else {
+                   editElem.show();
+               }                   
+           }         
+
+           $scope.UpdateRoomAndName = function (request)
+           {
+               // обновить через сервис имя и номер комнаты гостя
+               for (var requIndex in $scope.requestList)
+               {
+                   if($scope.requestList[requIndex].id==request.id)
+                   {
+                       $scope.requestList[requIndex].roomNo=request.roomNo;
+                       $scope.requestList[requIndex].questName=request.questName;
+                   }                    
+               }
+
+               editElem = $('.editRoomAndName_' + request.id).next();
+               editElem.hide();  
+           }
+
+            $scope.AddRoom = function () {
+
+                if ($scope.addRoomNo != null) {
+                    if ($scope.addRoomNo.length > 0) {
+                        $scope.roomList.push({ roomNo: roomNo = $scope.addRoomNo });
+                        $filter('roomFilter')($scope.requestList, $scope.roomList);
+                    }
+                }
+
+            }
+
+            $scope.removeRoom = function (roomNo) {
+                var remain = new Array();
+                for (var i in $scope.roomList) {
+                    if ($scope.roomList[i].roomNo == roomNo) {
+                        continue;
+                    }
+                    remain.push($scope.roomList[i]);
+                }
+                $scope.roomList = remain;
+            }
+            $scope.ClearFilter = function () {
+                $scope.selectedService = '';
+            }            
+          
+            $scope.selectedService = '';
+           // $scope.serviceTypeUI = "Inside AYS";
+            $scope.serviceType = "Inside AYS";
+            $scope.serviceTypeUI = $scope.serviceType;
+            $scope.selectedIndexInsService = -1;
+            $scope.selectedIndexOutService = -1;
+
+            $scope.selectService = function (service, serviceType) {
+                if (serviceType == "Inside AYS") {
+
+                    for (i = 0; i < $scope.insideServices.length; i++) {
+                      
+                        if ($scope.insideServices[i].id == service.id) {                           
+                            $scope.selectedService = $scope.insideServices[i].servName;                         
+                            $scope.insideServices[i].selectClass = "__selected";
+                            $scope.selectedIndexInsService = i;
+                            if ($scope.selectedIndexOutService != -1)
+                                $scope.outsideServices[$scope.selectedIndexOutService].selectClass = '';
+                        }
+                        else {
+                            if ($scope.insideServices[i].selectClass == "__selected")
+                                $scope.insideServices[i].selectClass = "";
+                        }
+                    }
+                }
+                else {
+                    for (i = 0; i < $scope.outsideServices.length; i++) {
+                        if ($scope.outsideServices[i].id == service.id) {                           
+                            $scope.selectedService = $scope.outsideServices[i].servName;                           
+                            $scope.outsideServices[i].selectClass = "__selected";
+                            $scope.selectedIndexOutService = i;
+                            if ($scope.selectedIndexInsService != -1)
+                                $scope.insideServices[$scope.selectedIndexInsService].selectClass = '';
+                        }
+                        else {
+                            if ($scope.outsideServices[i].selectClass == "__selected")
+                               $scope.outsideServices[i].selectClass = "";
+                        }
+                    }
+                }
+                $scope.serviceType = serviceType;
+
+                var filterToggle = $('.category-toggle');
+                var filterHead = filterToggle.parent('.category_head')
+                var filterBody = filterHead.next('.category_body');
+                filterBody.slideToggle();
+                filterHead.toggleClass('open');
+                //filterToggle.on('click', function () {
+
+                //});
+               // $filter('servTypeFilter')($scope.requestList, $scope.selectedService, $scope.serviceType);
+            }
+
+            $scope.ShowDetails = function (request) {
+                if (!request.isExpanded) {
+
+                    for (var requIndex in $scope.requestListDetails) {
+                        if ($scope.requestListDetails[requIndex].id == request.id) {
+                            for (var reqDetailIndex in $scope.requestListDetails[requIndex].requestDetails) {
+                                request.requestDetails.push($scope.requestListDetails[requIndex].requestDetails[reqDetailIndex]);
+                            }
+                            for (var reqTalkIndex in $scope.requestListDetails[requIndex].talkHistorys) {
+                                request.talkHistorys.push($scope.requestListDetails[requIndex].talkHistorys[reqTalkIndex]);
+                            }
+                        }
+                    }
+                    request.isExpanded = true;
+                }
+                else
+                    request.isExpanded = false;
+
+
+
+
+                if (request.isNew)
+                {
+                    request.isNew = false;
+                    $scope.CountNew = $scope.CountNew - 1;
+                }
+            }
+            $scope.RequestStatus = 'All';    //  for all type request
+            $scope.SearchValue = "";
+            $scope.CountNew = 0;
+            //$scope.allRequestList= $scope.requestList;
+
+            $scope.Search = function ()
+            {
+                //$scope.requestList = $scope.allRequestList;
+                //var remain = new Array();
+                //for (var requIndex in $scope.requestList) {
+                //    if ($scope.requestList[requIndex].roomNo.toString().indexOf($scope.SearchValue) != -1
+                //        || $scope.requestList[requIndex].questName.toLowerCase().indexOf($scope.SearchValue.toLowerCase()) != -1
+                //        || $scope.requestList[requIndex].name.toLowerCase().indexOf($scope.SearchValue.toLowerCase()) != -1)
+                //    {
+                //        remain.push($scope.requestList[requIndex]);
+                //    }
+                //}              
+                //$scope.requestList = remain;
+            }
+
+            for (var requIndex in $scope.requestList) {
+                if ($scope.requestList[requIndex].isNew) {
+                    $scope.CountNew = $scope.CountNew + 1;
+                }
+            }
+
+
+            $scope.ShowType = function (status) {
+                $scope.RequestStatus = status;
+                //$filter('requestTypeFilter')($scope.requestList, $scope.RequestStatus);
+            }
+            $scope.setCompleted = function (request) {
+                //for (i = 0; i < $scope.requestList.length; i++) {
+                //    if ($scope.requestList[i].id == request.id)
+                //        $scope.requestList[i].status = 'Completed';
+                //}
+
+                request.status = 'Completed';
+
+                if (request.isNew) {
+                    request.isNew = false;
+                    $scope.CountNew = $scope.CountNew - 1;
+                }
+            }
+            $scope.changeServices = function (type) {                
+                $scope.serviceTypeUI = type;
+            }         
+
+            function CancelSelect(type) {
+                if (type == 'Outside AYS') {
+                    if ($scope.selectedService != '') {
+                        for (i = 0; i < $scope.insideServices.length; i++) {
+                            $scope.insideServices[i].selected = false;
+                            $scope.insideServices[i].selectClass = '';
+                        }
+                    }
+                }
+
+                if (type == 'Inside AYS') {
+                    if ($scope.selectedService != '') {
+                        for (i = 0; i < $scope.outsideServices.length; i++) {
+                            $scope.outsideServices[i].selected = false;
+                            $scope.outsideServices[i].selectClass = '';
+                        }
+                    }
+                }
+            }
+        })
+        .directive('numbersOnly', function () {
+            return {
+                restrict: 'A',
+                link: function (scope, elm, attrs, ctrl) {
+                    elm.on('keydown', function (event) {
+                        // Allow: backspace, delete, tab, escape, enter and .
+                        if ($.inArray(event.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                            // Allow: Ctrl+A
+                            (event.keyCode == 65 && event.ctrlKey === true) ||
+                            // Allow: home, end, left, right
+                            (event.keyCode >= 35 && event.keyCode <= 39)) {
+                            // let it happen, don't do anything
+                            return;
+                        }
+                        else {
+                            // Ensure that it is a number and stop the keypress
+                            if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                                event.preventDefault();
+                            }
+                        }
+                    });
+                }
+            }
+        })
+        .filter('roomFilter', function () {
+            return function (requestList, roomList) {
+                if (roomList.length == 0)
+                    return requestList;
+
+                var remain = new Array();
+                for (var roomIndex in roomList) {
+                    for (var requIndex in requestList) {
+                        if (requestList[requIndex].roomNo == roomList[roomIndex].roomNo) {
+                            remain.push(requestList[requIndex]);
+                        }
+                    }
+                }
+                return remain;
+            }
+        })
+        .filter('servTypeFilter', function () {
+            return function (requestList, selectServName, serviceType) {
+
+                if (selectServName == '')
+                    return requestList;
+
+                var remain = new Array();
+                for (var requIndex in requestList) {
+                    if (requestList[requIndex].name.toLowerCase() == selectServName.toLowerCase() &&
+                        requestList[requIndex].serviceType.toLowerCase() == serviceType.toLowerCase()) {
+                        remain.push(requestList[requIndex]);
+                    }
+                }
+                return remain;
+            }
+
+        })
+        .filter('requestTypeFilter', function () {
+            return function (requestList, status) {
+
+                if (status == 'All')
+                    return requestList;
+
+                var remain = new Array();
+                for (var requIndex in requestList) {
+                    //'Completed' 'In progress' 'Pending'
+                    if (requestList[requIndex].status.toLowerCase() == status.toLowerCase()) {
+                        remain.push(requestList[requIndex]);
+                    }
+                }
+                return remain;
+            }
+
+        })
+        .filter('searchFilter', function () {           
+            return function (requestList, searchValue) {
+              
+                    if (searchValue != "") {
+                        var remain = new Array();
+                        for (var requIndex in requestList) {
+                            if (requestList[requIndex].roomNo.toString().indexOf(searchValue) != -1
+                                        || requestList[requIndex].questName.toLowerCase().indexOf(searchValue.toLowerCase()) != -1
+                                        || requestList[requIndex].name.toLowerCase().indexOf(searchValue.toLowerCase()) != -1) {
+                                remain.push(requestList[requIndex]);
+                            }
+                        }
+                       
+                        requestList = remain;                      
+                    } 
+                
+                return requestList;
+            }
+        });
+
+
+        angular.element(document).ready(function () {
+            angular.bootstrap(document.getElementById('operatorPage'), ['operatorSide']);
+
+            var filterToggle = $('.category-toggle');
+            var filterHead = filterToggle.parent('.category_head')
+            var filterBody = filterHead.next('.category_body');
+
+            filterToggle.on('click', function () {
+                filterBody.slideToggle();
+                filterHead.toggleClass('open');
+            });
+
+
+            var popupController = $('.personal-preferences-ic, .edit-ic');
+            popupController.on('click', function () {
+                var clickedController = $(this)
+
+                var popup= clickedController.next();
+
+                //if (clickedController.next().is(':visible'))
+                //   $(popup).hide();
+                //else 
+                //    $(popup).show();
+                    
+
+                $('body').on('click', function (e) {
+                    if (!$(e.target).closest(clickedController).length) {
+                        if (!$(e.target).closest(popup).length) {
+                            $(popup).hide();
+                        }
+                    }
+                });
+            });
+
+        })
+    </script> 
+	<title>Operator</title>
+</head>
+<body>
+	<div class="page_wrap" id="operatorPage" ng-controller="RequestsCtrl">
+        <div>
+		<header class="header">
+			<div class="header_inner">
+				<h1 class="logo">
+					<a href="/index.html">JW MARRIOTT Absheron Baku</a>
+				</h1>
+				<div class="location_info">
+					<span>
+						<big>Inside</big><br>
+						the hotel
+					</span>
+				</div>
+                <div class="main-navigation">
+                    <form action="" class="search-form">
+                        <div class="search-form_inner">
+                            <fieldset>          
+                                <input type="text" name="search" ng-model="SearchValue" class="text-field">
+                            </fieldset>
+                            <fieldset class="btn-field">
+                                <button class="search-btn" ng-click="Search()">Search</button>
+                            </fieldset>
+                        </div>
+                    </form>
+                    <div ng-switch="RequestStatus">
+                         <div ng-switch-when="All">
+                        <nav class="navigation" >
+                            <ul>
+                                <li class="__active"><a href="#" ng-click="ShowType('All')">All Requests</a></li>
+                                <li><a href="#" ng-click="ShowType('Pending')">New Requests<span ng-hide="CountNew==0" class="requests-count">{{CountNew}}</span></a></li>
+                                <li><a href="#" ng-click="ShowType('In Progress')">In Progress Requests</a></li>
+                                <li class="__last"><a href="#" ng-click="ShowType('Completed')">Closed Requests</a></li>
+                            </ul>
+                        </nav>
+                           </div>
+                         <div ng-switch-when="Pending">
+                        <nav class="navigation" >
+                            <ul>
+                                <li><a href="#" ng-click="ShowType('All')">All Requests</a></li>
+                                <li class="__active"><a href="#" ng-click="ShowType('Pending')">New Requests<span ng-hide="CountNew==0" class="requests-count">{{CountNew}}</span></a></li>
+                                <li><a href="#" ng-click="ShowType('In Progress')">In Progress Requests</a></li>
+                                <li class="__last"><a href="#"  ng-click="ShowType('Completed')">Closed Requests</a></li>
+                            </ul>
+                        </nav>
+                           </div>
+                         <div ng-switch-when="In Progress">
+                        <nav class="navigation" >
+                            <ul>
+                                <li><a href="#" ng-click="ShowType('All')">All Requests</a></li>
+                                <li><a href="#" ng-click="ShowType('Pending')">New Requests<span ng-hide="CountNew==0" class="requests-count">{{CountNew}}</span></a></li>
+                                <li class="__active"><a href="#" ng-click="ShowType('In Progress')">In Progress Requests</a></li>
+                                <li class="__last"><a href="#"  ng-click="ShowType('Completed')">Closed Requests</a></li>
+                            </ul>
+                        </nav>
+                           </div>
+                         <div ng-switch-when="Completed">
+                        <nav class="navigation" >
+                            <ul>
+                                <li><a href="#" ng-click="ShowType('All')">All Requests</a></li>
+                                <li><a href="#" ng-click="ShowType('Pending')">New Requests<span ng-hide="CountNew==0" class="requests-count">{{CountNew}}</span></a></li>
+                                <li><a href="#" ng-click="ShowType('In Progress')">In Progress Requests</a></li>
+                                <li class="__last __active"><a href="#"  ng-click="ShowType('Completed')">Closed Requests</a></li>
+                            </ul>
+                        </nav>
+                           </div>
+
+                    </div>
+                </div>
+			</div>
+		</header>
+		<div class="page">
+			<aside class="sidebar">
+				<div class="services-filter">
+					<div class="category">
+                    <div class="category_head">
+				<h4>{{selectedService}}</h4>
+				<span class="category-toggle"></span>
+                    </div>
+					
+					<div class="category_body">
+                <div class="category_content">
+                    <div ng-switch="serviceTypeUI">
+                        <div ng-switch-when="Inside AYS">
+                            <div class="buttons-inline">
+                                <a href="#" class="button __medium __light-grey __selected" ng-click="changeServices('Inside AYS')">Inside</a>
+                                <a href="#" class="button __medium __light-grey __last" ng-click="changeServices('Outside AYS')">Outside</a>
+                            </div>
+                        </div>
+                        <div ng-switch-when="Outside AYS">
+                            <div class="buttons-inline">
+                                <a href="#" class="button __medium __light-grey" ng-click="changeServices('Inside AYS')">Inside</a>
+                                <a href="#" class="button __medium __light-grey __last __selected" ng-click="changeServices('Outside AYS')">Outside</a>
+                            </div>
+                        </div>                             
+                    </div>          
+                    <div ng-switch="serviceTypeUI">
+                    <div ng-switch-when="Outside AYS">
+                    <ul class="category_list" >                              
+                        <li ng-repeat="outServ in outsideServices">
+                            <div ng-class="outServ.selectClass">
+                                <a href="#"  ng-click="selectService(outServ,'Outside AYS')">{{outServ.servName}}</a>
+                            </div>                                  
+                        </li>                               
+                    </ul>
+                    </div>                            
+                    <div ng-switch-when="Inside AYS">
+                    <ul class="category_list" >                              
+                        <li ng-repeat="insServ in insideServices">
+                            <div ng-class="insServ.selectClass">
+                                <a href="#"  ng-click="selectService(insServ,'Inside AYS')">{{insServ.servName}}</a>
+                            </div>                                  
+                        </li>                                
+                    </ul>
+                    </div>
+                    </div>
+                </div>
+			</div>
+                </div>        
+				<a href="" class="filter-action" ng-click="ClearFilter()">
+					Clear filter
+					<span class="cancel-ic"></span>
+				</a>
+				<form action="" class="filter-form">
+					<fieldset>
+						<input type="text" name="" numbers-only placeholder="Room number" ng-model="addRoomNo" class="text-field">
+						<button class="button __light-grey" ng-click="AddRoom()" ng-keyup="$event.keyCode == 13 ? AddRoom() : null">Add</button>
+					</fieldset>
+				</form>
+				<ul class="filter-form_items">
+					<li ng-repeat="room in roomList">
+						<a href="" ng-click="removeRoom(room.roomNo)"><span class="cancel-ic __black"></span>{{room.roomNo}}</a>
+					</li>					
+				</ul>
+                 </div> 
+			</aside>
+
+
+			<div class="main">
+				<table class="main-table">
+					<tbody>
+						<tr class="main-table_head">
+							<th class="table_t __first  __style-1">Requests</th>
+							<th class="table_t __style-5">Room Number</th>
+							<th  class="table_t __style-2">Guest Name</th>
+							<th  class="table_t __style-4">Time</th>
+							<th  class="table_t __style-3">Info</th>
+							<th class="table_t __last __style-3">Edit</th>
+						</tr>
+                        <tr class="main-table_row" ng-repeat="request in requestList| requestTypeFilter:RequestStatus | servTypeFilter:selectedService:serviceType| roomFilter:roomList| searchFilter:SearchValue| orderBy:'sendDate':true ">    <!-- -->                                              
+                            <td colspan="6" class="main-table_cell">  <!--   -->                          
+                                <table class="inner-table">
+                                    <tbody>
+                                    <tr class="inner-table_row">  
+                                        <td class="inner-table_cell __style-1" style="cursor:pointer" ng-click="ShowDetails(request)">
+                                            <div class="field">
+                                                <div class="field-content">
+                                                    <div ng-switch="request.status">
+                                                            <div ng-switch-when="Pending">
+                                                                <label for="checkBox-{{request.id}}" class="label">
+                                                                    <div class="brand-checkbox">
+                                                                        <input type="checkbox" name="request" ng-click="setCompleted(request)" value="" id="checkBox-{{request.id}}">
+                                                                         <span class="checkbox-ic"></span>
+                                                                    </div>
+                                                                    {{request.name}}
+                                                                    <span class="label_desc __style-1" >{{request.status}}</span>
+                                                                </label>
+                                                            </div>
+                                                            <div ng-switch-when="In Progress">
+                                                                 <label for="checkBox-{{request.id}}" class="label">
+                                                                    <div class="brand-checkbox">
+                                                                        <input type="checkbox" name="request" ng-click="setCompleted(request)" value="" id="checkBox-{{request.id}}">
+                                                                         <span class="checkbox-ic"></span>
+                                                                    </div>
+                                                                    {{request.name}}
+                                                                    <span class="label_desc">{{request.status}}</span>
+                                                                 </label>
+                                                            </div> 
+                                                         <div ng-switch-when="Completed">
+                                                              <label for="checkBox-{{request.id}}" class="label __style-2">
+                                                                    <div class="brand-checkbox">
+                                                                        <input type="checkbox" name="request" checked="checked" disabled ng-click="setCompleted(request)" value="" id="checkBox-{{request.id}}">
+                                                                         <span class="checkbox-ic"></span>
+                                                                    </div>
+                                                                    {{request.name}}
+                                                                    <span class="label_desc __style-2">{{request.status}}</span>
+                                                                 </label>
+                                                           </div>                                   
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>  
+                                        <td class="inner-table_cell __style-2" style="cursor:pointer" ng-click="ShowDetails(request)">{{request.roomNo }}</td>
+                                        <td class="inner-table_cell __style-3" style="cursor:pointer" ng-click="ShowDetails(request)">{{request.questName}}</td>
+                                        <td class="inner-table_cell __style-4" style="cursor:pointer" ng-click="ShowDetails(request)">
+                                            <time class="time __style-1">{{request.sendTime}}</time>
+                                            <span class="time_desc">{{request.serviceType}}</span>
+                                        </td>
+
+                                        <td class="inner-table_cell __style-5">
+                                            <span class="personal-preferences-ic personPref_{{request.id}}"  ng-click="GetPersonPref(request)">Personal Preferences</span>
+                                            <div class="ui-popup __personal" >
+                                                <div class="popup_inner">   
+                                                    <dl>
+                                                        <dt>I'm allergic to:</dt>
+                                                        <dd>{{personalPreference.alergicTo}}</dd>
+                                                    </dl>
+                                                    <dl>
+                                                        <dt>I don’t eat:</dt>
+                                                        <dd>{{personalPreference.dontEat}}</dd>
+                                                    </dl>
+                                                    <dl class="__inline">
+                                                        <dt>Smoking:</dt>
+                                                        <dd>{{personalPreference.smoking}}</dd>
+                                                    </dl>
+                                                    <dl>
+                                                        <dt>Additional information:</dt>
+                                                        <dd>{{personalPreference.additionInfo}}</dd>
+                                                    </dl>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="inner-table_cell __style-5">
+                                            <span class="edit-ic editRoomAndName_{{request.id}}" ng-click="EditRoomAndNumber(request)">edit</span>
+                                            <div class="ui-popup __edit">
+                                                <div class="popup_inner">
+                                                    <form action="">
+                                                        <div class="field">
+                                                            <div class="field-label">
+                                                                <label for="roomNO">Room no.:</label>
+                                                            </div>
+                                                            <div class="field-content">
+                                                                <input type="number" ng-model="request.roomNo" name="room" id="roomNO"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="field">
+                                                            <div class="field-label">
+                                                                <label for="lastName">Last name:</label>
+                                                            </div>
+                                                            <div class="field-content">
+                                                                <input type="text" ng-model="request.questName" name="lastName" id="lastName"/>
+                                                            </div>
+                                                        </div>
+                                                        <button class="button __black" ng-click="UpdateRoomAndName(request)">Save</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr ng-class="((request.isExpanded) && ('inner-table_row request-info') || ('inner-table_row request-info hide'))">    
+                                        <td colspan="6" class="request-info_inner">
+                                            <div class="request-info_ctn">
+                                                <div class="request-options">
+                                                    <dl ng-repeat="reqDetail in request.requestDetails">
+                                                        <dt>{{reqDetail.servName}}</dt>
+                                                        <dd>{{reqDetail.servText}}</dd>
+                                                    </dl>                                                
+                                                </div>
+                                                <ul class="comments">
+                                                    <li class="comment"  ng-repeat="item in request.talkHistorys">
+                                                        <div ng-switch="item.author">
+                                                            <div  ng-switch-when="Operator">
+                                                                <div class="info operator"><time class="time">{{item.time}}</time>,  <span class="user-name">{{item.author}}</span>:</div>
+                                                                <div class="message">{{item.told}}</div>
+                                                            </div>
+                                                             <div ng-switch-when="Client">
+                                                                <div class="info"><time class="time">{{item.time}}</time>, <span class="user-name">{{item.author}}</span>:</div>
+                                                                <div class="message">{{item.told}}</div>
+                                                             </div>
+                                                        </div>                                                       
+                                                    </li>                                                  
+                                                </ul>
+                                                <form action="" class="message-form">
+                                                    <div class="send-option">
+                                                        <label class="label" for="confirmation">
+                                                            <div class="brand-checkbox">
+                                                                <input type="checkbox" id="confirmation" value="" name="message-option">
+                                                                <span class="checkbox-ic"></span>
+                                                            </div>
+                                                            Send with<br>
+                                                            confirmation
+                                                        </label>
+                                                    </div>
+                                                    <fieldset class="field">
+                                                        <input type="text" class="text-field">
+                                                        <button type="sumbit" class="button __light-grey">Send</button>
+                                                    </fieldset>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>                            
+                        </tr>                     
+					</tbody>
+				</table>
+			</div>
+		</div>
+        </div>
+	</div>
+</body>
+</html>

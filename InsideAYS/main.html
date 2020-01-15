@@ -1,0 +1,212 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <!--<script type="text/javascript" src="http://www.google.com/jsapi"></script>-->
+    <!--<script src="/javascript/insideServices.js"></script>-->
+    <!--<script src="/javascript/angular.ng-modules.js"></script>-->
+    <script src="/javascript/jquery-1.11.0.min.js"></script>
+    <script src="/javascript/jquery.timepicker.js"></script>
+    <script src="/javascript/bootstrap-datepicker.js"></script>
+    <script src="/javascript/jquery.core-ui-select.js"></script>
+    <script src="/javascript/angular.js"></script>
+    <!--<script src="/javascript/angular.min.js"></script>-->
+    
+
+    <title>Marriot</title>
+
+    <script type="text/javascript">
+
+        angular.module("main", []).controller("RedirectCtrl",
+              function ($scope, $window) {
+                  $scope.Logo = function () {
+                      $window.open("/index.html", '_self');
+                  }
+                  $scope.MyRequest = function () {
+                      //var lang = $scope.selectLang;
+                      $window.open("/MyRequests/my-request.html", '_self');
+                  }
+              }
+        );
+
+        angular.element(document).ready(function () {
+            var myDiv2 = document.getElementById("main");
+            angular.bootstrap(myDiv2, ["main"]);
+        });
+
+    </script>
+</head>
+<body>
+    <div class="page-wrap" id="main" ng-controller="RedirectCtrl">
+        <div>
+            <header class="header">
+                <div class="header_inner">
+                    <h1 class="logo">
+                        <a href="" ng-click="Logo()">JW MARRIOTT.<br>Absheron<br>Baku</a>
+                    </h1>
+                    <div class="location-info">
+                        <span>
+						<big>Inside</big><br>
+						the hotel
+					</span>
+                    </div>
+                    <div class="main-navigation">
+                        <ul>
+                            <li class="__active"><a href="/index.html">Make request</a></li>
+                            <li class="__last"><a href="#" ng-click="MyRequest()">My request</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            <div class="page">
+                <div class="page_inner">
+                    <div class="services">
+                        <div class="services_inner">
+                            <ul class="grid">
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/hotel-car.html">
+                                        <img src="/images/services_03.png" alt="Hotel Car">
+                                        <span class="service_name">Hotel<br>Car</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/guest-preference.html">
+                                        <img src="/images/services_05.png" alt="Guest Preference">
+                                        <span class="service_name">Guest<br>Preference</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/entertainment.html">
+                                        <img src="/images/services_07.png" alt="Entertainment">
+                                        <span class="service_name">Entertainment</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/restaurant-reservations.html">
+                                        <img src="/images/services_09.png" alt="Restaurant Reservations">
+                                        <span class="service_name">Restaurant<br>Reservations</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/bell-boy.html">
+                                        <img src="/images/services_15.png" alt="Bell boy">
+                                        <span class="service_name">Bell<br>Boy</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/book-tour.html">
+                                        <img src="/images/services_16.png" alt="City Tour">
+                                        <span class="service_name">City<br>Tour</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/check-flight-details.html">
+                                        <img src="/images/services_17.png" alt="Check Flight Details">
+                                        <span class="service_name">Check<br>Flight Details</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/booking-meeting-room.html">
+                                        <img src="/images/services_18.png" alt="Book a Meeting Room">
+                                        <span class="service_name">Book<br>a Meeting Room</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/laundry-request.html">
+                                        <img src="/images/services_23.png" alt="Laundry Request">
+                                        <span class="service_name">Laundry<br>Request</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/housekeeping-request.html">
+                                        <img src="/images/services_24.png" alt="Housekeeping Request">
+                                        <span class="service_name">Housekeeping<br>Request</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/room-service-order.html">
+                                        <img src="/images/services_25.png" alt="Room Service Order">
+                                        <span class="service_name">Room Service<br>Order</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/room-maintenance.html">
+                                        <img src="/images/services_26.png" alt="Room Maintenance">
+                                        <span class="service_name">Room<br>Maintenance</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/airport-drop.html">
+                                        <img src="/images/services_31.png" alt="Airport Drop">
+                                        <span class="service_name">Airport<br>Drop</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/airport-pickup.html">
+                                        <img src="/images/services_32.png" alt="Airport Pick Up">
+                                        <span class="service_name">Airport<br>Pick Up</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/wakeup-call.html">
+                                        <img src="/images/services_33.png" alt="Wake Up Call">
+                                        <span class="service_name">Wake Up<br>Call</span>
+                                    </a>
+                                </li>
+                                <li class="service">
+                                    <a class="popup-controller" href="/InsideAYS/absheron-spa.html">
+                                        <img src="/images/services_34.png" alt="Absheron Spa">
+                                        <span class="service_name">ABSHERON SPA</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer_inner">
+            <div class="footer_navigation">
+                <ul>
+                    <li class="__personal">
+                        <a class="popup-controller" href="/InsideAYS/preferences.html">
+                            <span>personal Preferences</span>
+                        </a>
+                    </li>
+                    <li class="__switch">
+                        <a href="/OutsideAYS/main.html">
+                            <span>switch to outside AYs</span>
+                        </a>
+                    </li>
+                    <li class="__emergency">
+                        <a href="javascript:void(0)">Emergency button</a>
+                        <ul class="sub-menu">
+                            <li><a class="popup-controller" href="/InsideAYS/doctor-service.html">Medical service</a></li>
+                            <li><a href="#">Call operator</a></li>
+                            <li><a href="#">Help me, i’m lost</a></li>
+                            <li><a href="/report-to-manager.html">Report to Manager on Duty</a></li>
+                            <li><a href="/report-to-manager.html">Report to General Manager</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <link rel="stylesheet" href="/Content/styles.css">
+    <link rel="stylesheet" href="/Content/core-ui-select.css">
+    <link rel="stylesheet" href="/Content/jquery.timepicker.css">
+    <link rel="stylesheet" href="/Content/jquery.scrollpane.css">
+    <link rel="stylesheet" href="/Content/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/Content/jquery.fancybox.css">
+    <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,500,700">
+
+    <script src="/javascript/jquery.fancybox.js"></script>
+    <script src="/javascript/jquery.fancybox.pack.js"></script>
+    <script src="/javascript/scripts.js"></script>
+</body>
+
+
+</html>

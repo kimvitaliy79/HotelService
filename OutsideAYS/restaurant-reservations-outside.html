@@ -1,0 +1,451 @@
+<script src="/javascript/angular-resource.js"></script>
+
+<script type="text/javascript">
+    angular.module('restourant', ['ngResource']).controller("RestourantCtrl",
+         function ($scope, $resource, $timeout) {
+             $scope.Restourant = {
+                 additionInfo: 'Test info', roomNo: '1', lastName: 'Bob', smoking: '', nameForReserve: '', persons: 1, restValue: '',date:'',time:'',
+                 restorantList: restorantList = [
+                   //{ name: 'African', value: 'african' },
+                   //{ name: 'American', value: 'american' },
+                   //{ name: 'British', value: 'british' }
+                 ],
+
+                 classList: classList = [
+                  { name: '$', selected: false },
+                   { name: '$$', selected: false },
+                   { name: '$$$', selected: false },
+                   { name: '$$$$', selected: false }
+                 ]
+             };
+
+             $resource('http://hotels.modera.co/api/catalogs/:request_type/restaurants', { request_type: 'outside' }).get(null, function (u, getResponseHeaders) {
+                 // alert(u);
+                 $scope.Restourant.restorantList = u.restaurants;
+                 $scope.Restourant.restValue = $scope.Restourant.restorantList[0].id;
+                 $timeout(function () {
+                     //if ($scope.BookMeeting.conferenceList.length > 0) {
+                     $("#ddlRestourantList").coreUISelect();
+                     //promise.cancel();
+                     //}                     
+                 }, 1, false);
+             });
+            
+
+             angular.element(document.getElementById('errorsMsg')).css('display', 'none');
+             angular.element(document.getElementById('errorInClass')).css('display', 'none');
+             angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+
+             $scope.radioWarningClass = "icon __radio";
+             $scope.limitClass = 'symbols-limit';
+             $scope.maxsymbolsClass = "max-symbols";
+             $scope.nameForReserveClass = "text-field";
+             $scope.personsClass = "text-field __width-S __aligner";
+             $scope.classWarning = "field_label";
+             $scope.isClassSelected = false;
+             $scope.isOnlyNumber = false;
+             $scope.isErrorInLength = false;
+             $scope.showSmoking = false;
+
+             var d = new Date();
+             var weekDay = d.getDay();
+             var month = d.getMonth();
+             var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+             var weekArray = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+             var day = d.getDate();
+             $scope.Restourant.date = weekArray[weekDay] + " " + monthArray[month] + " " + day;
+
+             var hh = d.getHours();
+             var m = d.getMinutes();
+             var dd = "AM";
+             var h = hh;
+             if (h >= 12) {
+                 h = hh - 12;
+                 dd = "PM";
+             }
+             if (h == 0) {
+                 h = 12;
+             }
+             $scope.Restourant.time = h + ":" + m + " " + dd;
+
+             $scope.validate = function (validateItem) {
+                 if (angular.isDefined(validateItem)) {
+                     if (validateItem.length >= 180) {
+                         $scope.limitClass = 'symbols-limit __warning';
+                         $scope.maxsymbolsClass = "max-symbols __warning";
+                         $scope.isErrorInLength = true;
+                     }
+                     else {
+                         $scope.limitClass = 'symbols-limit';
+                         $scope.maxsymbolsClass = "max-symbols";
+                         $scope.isErrorInLength = false;
+                     }
+                 }
+             }
+
+             $scope.changeRadio = function () {
+                 if ($scope.radioWarningClass == "icon __radio __warning") {
+                     $scope.radioWarningClass = "icon __radio";
+                     $scope.showSmoking = false;
+                 }
+             }
+
+             $scope.selectClass = function (indexItem, select) {
+                 $scope.Restourant.classList[indexItem].selected = select;
+
+                 var isOneSelected = false;
+
+                 for (i = 0; i < $scope.Restourant.classList.length; i++) {
+                     if ($scope.Restourant.classList[i].selected) {
+                         isOneSelected = true;
+                         break;
+                     }
+                 }
+
+                 if (isOneSelected)
+                     $scope.classWarning = "field_label";
+                 else
+                     $scope.classWarning = "field_label __warning";
+
+                 $scope.isClassSelected = isOneSelected;
+             }
+
+
+
+             $scope.sendRequest = function () {               
+
+                 var isOneSelected = false;
+                 for (i = 0; i < $scope.Restourant.classList.length; i++) {
+                     if ($scope.Restourant.classList[i].selected) {
+                         $scope.isClassSelected = true;
+                         break;
+                     }
+                 }
+
+                 if (!$scope.restourantForm.nameForReserve.$error.required && !$scope.restourantForm.persons.$error.required && $scope.isClassSelected
+                     && !$scope.restourantForm.smokingYes.$invalid && !$scope.restourantForm.smokingNo.$invalid) {
+
+                     if ($scope.maxsymbolsClass == "max-symbols __warning")
+                         return;
+
+                     var postData = {
+                         request_type: "outside",
+                         request: {
+                             request_form: "restourant_reservation",
+                             room_number: "",
+                             last_name: "",
+                             send_date: "",
+                             request_body: {
+                                 name_for_reservation: "",
+                                 persons: 1,
+                                 additional_information: "",
+                                 Class: "",
+                                 cuisine: "",
+                                 mealTime: "",
+                                 smoking_preference: ""
+                             }
+                         }
+                     }
+
+                     postData.request.room_number = $scope.Restourant.roomNo;
+                     postData.request.last_name = $scope.Restourant.lastName;
+                     postData.request.request_body.name_for_reservation = $scope.Restourant.nameForReserve;
+                     postData.request.request_body.additional_information = $scope.Restourant.additionInfo;
+                     postData.request.request_body.persons = $scope.Restourant.persons;
+                     postData.request.request_body.cuisine = $scope.Restourant.restValue;                   
+                     postData.request.request_body.smoking_preference = $scope.Restourant.smoking;
+                     postData.request.request_body.mealTime = $scope.Restourant.date + " " + $scope.Restourant.time;
+                     postData.request.send_date = Date.parse(new Date());
+
+                     var selectedClasses = null;
+                     for (i = 0; i < $scope.Restourant.classList.length; i++) {
+                         if ($scope.Restourant.classList[i].selected) {
+                             if (selectedClasses == null)
+                                 selectedClasses = $scope.Restourant.classList[i].name;
+                             else
+                                 selectedClasses = selectedClasses + ", " + $scope.Restourant.classList[i].name;
+                         }
+                     }
+                     postData.request.request_body.Class = selectedClasses;
+
+
+                     $.fancybox.close();
+                     $.fancybox.open([{ type: 'ajax', href: '/InsideAYS/successMsg.html' }], {
+                         padding: 0,
+                         scrolling: 'visible'
+                     });
+                 }
+
+                 if ($scope.restourantForm.nameForReserve.$error.required)
+                     $scope.nameForReserveClass = "text-field __warning";
+
+                 if ($scope.restourantForm.persons.$error.required)
+                     $scope.personsClass = "text-field __width-S __aligner __warning";
+
+                 if (!$scope.isClassSelected) {
+                     $scope.classWarning = "field_label __warning";
+                 }
+
+                 if ($scope.restourantForm.smokingYes.$invalid && $scope.restourantForm.smokingNo.$invalid) {
+                     $scope.radioWarningClass = "icon __radio __warning";
+                     $scope.showSmoking = true;
+                 }
+
+                 angular.element(document.getElementById('errorsMsg')).removeAttr('style');
+                 angular.element(document.getElementById('errorInClass')).removeAttr('style');
+
+             }
+
+             $scope.PlusDate = function (input) {
+                 var arrayDates = $scope.Restourant.date.split(" ");
+                 var date = parseInt(arrayDates[2]) + 1;
+                 $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+             }
+
+             $scope.MinusDate = function () {
+                 var arrayDates = $scope.Restourant.date.split(" ");
+                 var date = parseInt(arrayDates[2]) - 1;
+                 $(".date-picker").datepicker("setDate", arrayDates[0] + " " + arrayDates[1] + " " + date);
+             }
+
+             $scope.PlusTime = function () {
+
+                 var arrayTime = $scope.Restourant.time.split(":");
+                 var hours = parseInt(arrayTime[0]) + 1;
+                 var amPM = arrayTime[1].split(" ")[1];
+
+                 if (hours >= 12) {
+                     hours = hours - 12;
+
+                     if (amPM == 'pm')
+                         amPM = "am";
+                     else
+                         amPM = "pm";
+                 }
+
+                 var minutes = arrayTime[1].split(" ")[0];
+                 $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+             }
+
+             $scope.MinusTime = function () {
+                 var arrayTime = $scope.Restourant.time.split(":");
+                 var hours = parseInt(arrayTime[0]) - 1;
+                 var amPM = arrayTime[1].split(" ")[1];
+
+                 if (hours == -1) {
+                     hours = "11";
+                     if (amPM == 'pm')
+                         amPM = "am";
+                     else
+                         amPM = "pm";
+                 }
+
+                 var minutes = arrayTime[1].split(" ")[0];
+                 $('.time-picker').timepicker('setTime', hours + ":" + minutes + " " + amPM);
+             }
+         }
+     )
+    .directive('numbersOnly', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, elm, attrs, ctrl) {
+                elm.on('keydown', function (event) {
+                    // Allow: backspace, delete, tab, escape, enter and .
+                    if ($.inArray(event.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                        // Allow: Ctrl+A
+                        (event.keyCode == 65 && event.ctrlKey === true) ||
+                        // Allow: home, end, left, right
+                        (event.keyCode >= 35 && event.keyCode <= 39)) {
+                        // let it happen, don't do anything                        
+                        return;
+                    }
+                    else {
+                        // Ensure that it is a number and stop the keypress
+                        if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                            event.preventDefault();
+                            angular.element(document.getElementById('errorInPersons')).removeAttr('style');
+                        }
+                        else {
+                            angular.element(document.getElementById('errorInPersons')).css('display', 'none');
+                        }
+                    }
+
+                });
+            }
+        }
+    })
+    .directive('datepicker', function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModelCtrl) {
+                $(function () {
+                    element.datepicker({
+                        dateFormat: 'D M d',
+                        onSelect: function (date) {
+                            scope.$apply(function () {
+                                ngModelCtrl.$setViewValue(date);
+                            });
+                        }
+                    });
+                });
+            }
+        }
+    });
+
+    angular.element(document).ready(function () {
+        var myDiv2 = document.getElementById('popup__restaurant-reservations');   //"popup__room-service-order" "servOrder"
+        angular.bootstrap(myDiv2, ['restourant']);    
+
+        $('.time-picker').timepicker({
+            'step': 15,
+            'timeFormat': 'g:i a'
+        });
+
+        $('.date-picker').datepicker({
+            'format': 'D M d',
+            'autoclose': true
+        });
+    });
+    //@ sourceURL=restourantOutside.js
+</script>
+<div class="ui-popup __style-2" id="popup__restaurant-reservations" ng-controller="RestourantCtrl">
+    <div class="ui-popup_inner">
+        <div class="ui-popup_head">
+            <h4 class="__restaurant-reservations-ic">Restaurant Reservations</h4>
+        </div>
+        <div class="ui-popup_body">
+            <form action="#" name="restourantForm" novalidate class="css-form">
+                <div class="form_inner __style-1">
+                    <div class="form_column __left">
+                        <div class="field">
+                            <div class="field_label">Cuisine:</div>
+                            <div class="field_content">
+                                <div class="field-select">
+                                    <select name="" id="ddlRestourantList" ng-options="option.id as option.name for option in Restourant.restorantList" ng-model="Restourant.restValue"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">Mealtime:</div>
+                            <div class="field_content">
+                                <div class="field_content">
+                                    <div class="fields __style-1">
+                                    <div class="icons-group __style-1">
+                                    <span class="icon __arrow __style-1" ng-click="PlusDate()"></span>
+                                    <span class="icon __arrow" ng-click="MinusDate()"></span>
+                                    </div> 
+                                    <input type="text" class="text-field __first date-picker" ng-model="Restourant.date">                                    
+                                    <input type="text" class="text-field time-picker" ng-model="Restourant.time">
+                                    <div class="icons-group">
+                                    <span class="icon __arrow __style-1" ng-click="PlusTime()" ></span>
+                                    <span class="icon __arrow" ng-click="MinusTime()"></span>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div ng-class="classWarning">Class:</div>
+                            <div class="field_content">
+                                <div class="button-inline __style-1 __cost-class">
+                                    <div ng-switch="Restourant.classList[0].selected">
+                                        <div ng-switch-when="true">
+                                            <button class="button __small __white-grey __selected" ng-click="selectClass(0, false)">$</button>
+                                        </div>
+                                        <div ng-switch-when="false">
+                                            <button class="button __small __white-grey" ng-click="selectClass(0, true)">$</button>
+                                        </div>
+                                    </div>
+                                    <div ng-switch="Restourant.classList[1].selected">
+                                        <div ng-switch-when="true">
+                                            <button class="button __small __white-grey __selected" ng-click="selectClass(1, false)">$$</button>
+                                        </div>
+                                        <div ng-switch-when="false">
+                                            <button class="button __small __white-grey" ng-click="selectClass(1, true)">$$</button>
+                                        </div>
+                                    </div>
+                                    <div ng-switch="Restourant.classList[2].selected">
+                                        <div ng-switch-when="true">
+                                            <button class="button __small __white-grey __selected" ng-click="selectClass(2, false)">$$$</button>
+                                        </div>
+                                        <div ng-switch-when="false">
+                                            <button class="button __small __white-grey" ng-click="selectClass(2, true)">$$$</button>
+                                        </div>
+                                    </div>
+                                    <div ng-switch="Restourant.classList[3].selected">
+                                        <div ng-switch-when="true">
+                                            <button class="button __small __white-grey __last __selected" ng-click="selectClass(3, false)">$$$$</button>
+                                        </div>
+                                        <div ng-switch-when="false">
+                                            <button class="button __small __white-grey __last" ng-click="selectClass(3, true)">$$$$</button>
+                                        </div>
+                                    </div>
+                                     <span class="warning-info" id="errorInClass" ng-hide="isClassSelected">*Choose class</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_content">
+                                <div class="field-simple-inline">
+                                    <label for="">Persons:</label>                                   
+                                     <input type="text" ng-class="personsClass" value="1" name="persons" numbers-only ng-model="Restourant.persons" required>
+                                    <span class="warning-info" id="errorInPersons">*Only integer</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_column __right"> 
+                        <div class="field">
+                         <div class="field_content">
+                                <div class="fields_title __style-2">Smoking<br>Preference:</div>
+                                <div class="radio-inline">
+                                    <div class="field-radio">
+                                        <input type="radio" name="smokingYes" id="smoking-yes-rr" ng-change="changeRadio()" ng-model="Restourant.smoking" value="yes" required>
+                                        <label for="smoking-yes-rr"><span ng-class="radioWarningClass"></span>Yes</label>
+                                    </div>
+                                    <div class="field-radio __last">
+                                        <input type="radio" name="smokingNo" id="smoking-no-rr" ng-change="changeRadio()"  ng-model="Restourant.smoking" value="no" required>
+                                        <label for="smoking-no-rr"><span ng-class="radioWarningClass"></span>No</label>
+                                    </div>
+                                    <span class="warning-info" ng-show="showSmoking" >Choose smoking preference</span>
+                                </div>                                 
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Name for reservation:</label>
+                            </div>
+                            <div class="field_content">                                
+                                  <input type="text" ng-class="nameForReserveClass" name="nameForReserve" value="" placeholder="John Doe" ng-model="Restourant.nameForReserve" required>
+                            </div>
+                        </div>
+                        <div class="field">     
+                             <div class="field_label">
+                                <label for="">Additional Information:</label><span ng-class="maxsymbolsClass"><span ng-class="limitClass">180</span> symbols</span>
+                            </div>
+                            <div class="field_content">
+                                <input type="text" class="text-field __limit" placeholder="" maxlength="180" ng-model="Restourant.additionInfo" ng-change="validate(Restourant.additionInfo)">
+                                <span class="warning-info" ng-show="isErrorInLength">Too much symbols</span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="field_label">
+                                <label for="">Your information:</label>
+                            </div>
+                            <div class="field_content __style-1">
+                                <input type="text" class="text-field __width-S" placeholder="Room No." ng-model="Restourant.roomNo">
+                                <input type="text" class="text-field __width-M" placeholder="Last Name" ng-model="Restourant.lastName">
+                                 <span class="warning-info" id="errorsMsg" ng-show="restourantForm.nameForReserve.$error.required || restourantForm.persons.$error.required">*Fields required to fill</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-inline __alinger">
+                    <button class="button __black __medium" type="button" ng-click="sendRequest()">Send request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

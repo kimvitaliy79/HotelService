@@ -1,0 +1,111 @@
+.b-core-ui-select {
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.b-core-ui-select__select {
+    position: static;
+}
+
+.b-core-ui-select__value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 25px;
+}
+
+.b-core-ui-select__select_state_hide {
+    height: 1px !important;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 1px !important;
+    text-indent: -9999px;
+    overflow: hidden;
+    opacity: 0;
+    z-index: -1;
+    filter: alpha(opacity = 0);
+}
+
+.b-core-ui-select.open {
+    border-radius: 5px 5px 0 0;
+}
+
+.b-core-ui-select.disabled,
+.b-core-ui-select.disabled:ACTIVE{
+    opacity: .5;
+    color: #333333;
+    background-color: #e6e6e6;
+    background-position: 0 -15px;
+    transition: background-position 0.1s linear;
+}
+
+.b-core-ui-select__dropdown {
+    display: none;
+    position: absolute;
+    top: 0;
+    margin-top: -2px;
+}
+
+.b-core-ui-select__dropdown.hide {
+    display: none;
+}
+
+.b-core-ui-select__dropdown.show {
+    display: block;
+}
+
+.b-core-ui-select__dropdown__wrap {
+    overflow: auto;
+	outline: none;
+}
+
+
+.j-scroll-pane .b-core-ui-select__dropdown__item {
+    margin-right: 20px;
+}
+
+.b-core-ui-select__dropdown__list {
+    overflow: hidden;
+    margin: 0 !important;
+    border: 1px solid #c2c2c2;
+    border-top: 0 none;
+    padding: 0;
+
+}
+
+.b-core-ui-select__dropdown__item {
+    height: 34px;
+    padding: 0 13px;
+    list-style-type: none;
+    cursor: pointer;
+    border-top: 1px solid #c2c2c2;
+    font: 300 13px/34px "Roboto";
+    color: #232323;
+}
+
+
+.b-core-ui-select__dropdown__label {
+    padding: 10px;
+    min-height: 18px;
+    font-style: italic;
+    list-style-type: none;
+    border-bottom: 1px solid #ccc;
+}
+
+.b-core-ui-select__dropdown__item.disabled,
+.b-core-ui-select__dropdown__item.disabled:HOVER {
+    color: #ccc;
+    background: none;
+}
+
+.b-core-ui-select__dropdown__item.selected,
+.b-core-ui-select__dropdown__item.selected:HOVER {
+    background: #eaf2f7;
+}
+

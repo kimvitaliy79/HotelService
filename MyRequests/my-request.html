@@ -1,0 +1,349 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <script src="/javascript/angular.js"></script>  
+   
+    <script type="text/javascript">      
+
+        angular.module("myRequest", []).controller('RequestsCtrl', function ($scope) {
+            $scope.requestList = [
+              {
+                  id: 0, name: 'Guest preference', status: 'Completed', sendTime: '1 min ago', number: 0, isExpanded: false, isCompleted: true,
+                  requestDetails: requestDetails = [],
+                  talkHistorys: talkHistorys = []
+              },
+              {
+                  id: 1, name: 'Book meeting room', status: 'In progress', sendTime: '2 min ago', number: 1, isExpanded: false, isCompleted: false,
+                  requestDetails: requestDetails = [],
+                  talkHistorys: talkHistorys = []
+              },
+              {
+                  id: 2, name: 'Restourant reservation', status: 'Pending', sendTime: '3 min ago', number: 2, isExpanded: false, isCompleted: false,
+                  requestDetails: requestDetails = [],
+                  talkHistorys: talkHistorys = []
+              }
+            ];
+
+            // это будет братся из сервиса при клике на раскрытие запроса
+            $scope.requestListDetails = [
+                {
+                    id: 0,
+                    requestDetails: requestDetails = [
+                                                  { servName: 'What can I do for you', servText: 'A cup of coffee' },
+                                                  { servName: 'Call at your service', servText: 'yes' },
+                                                  { servName: 'Room no', servText: '1' },
+                                                  { servName: 'Last name', servText: 'Bob' }
+                    ],
+                    talkHistorys: talkHistorys = [{ author: 'Me', time: '10 min ago', told: 'Hello', isNew: false },
+                                                   { author: 'Operator', time: '5 min ago', told: 'I am working', isNew: true }
+                    ]
+                },
+                {
+                id: 1,                
+                    requestDetails: requestDetails = [
+                                { servName: 'Conference room', servText: 'Amburan' },
+                                { servName: 'Room setup details', servText: 'u-shape' },
+                                { servName: 'Cofe break', servText: 'no' },
+                                { servName: 'Persons', servText: '1' },
+                                { servName: 'Cofe break time', servText: 'Sat mar 09:10 am' },
+                                { servName: 'Persons qty for cofe break', servText: '1' },
+                                { servName: 'Additional information', servText: 'test' },
+                                { servName: 'Room no', servText: '2' },
+                                { servName: 'Last name', servText: 'Betty' }
+                    ],
+                    talkHistorys: talkHistorys = [{ author: 'Me', time: '20 min ago', told: 'hi', isNew: false },
+                                          { author: 'Operator', time: '10 min ago', told: 'good morning', isNew: false }
+                    ]
+                },
+                {
+                    id: 2,                    
+                        requestDetails: requestDetails = [
+                            { servName: 'Choose one of our restorant', servText: 'JW steak house' },
+                            { servName: 'Meal time ', servText: 'Dinner' },
+                            { servName: 'Smoking preference', servText: 'yes' },
+                            { servName: 'Persons', servText: '2' },
+                            { servName: 'Name for reservation', servText: 'Billy' },
+                            { servName: 'Additional information', servText: 'Hello world' },
+                            { servName: 'Room no', servText: '3' },
+                            { servName: 'Last name', servText: 'Dolly' }
+                        ],
+                    talkHistorys: talkHistorys = [{ author: 'Me', time: '1 min ago', told: 'Test', isNew: true },
+                                                  { author: 'Operator', time: '2 min ago', told: 'this is test', isNew: true }
+                    ]
+                }
+            ]
+
+
+            $scope.ShowDetails = function (request) {
+                if (!request.isExpanded) {                  
+                    
+                    for (var requIndex in $scope.requestListDetails)
+                    {
+                        if ($scope.requestListDetails[requIndex].id == request.id)
+                        {                            
+                            for (var reqDetailIndex in $scope.requestListDetails[requIndex].requestDetails)
+                            {
+                                request.requestDetails.push($scope.requestListDetails[requIndex].requestDetails[reqDetailIndex]);
+                            }
+                            for (var reqTalkIndex in $scope.requestListDetails[requIndex].talkHistorys) {
+                                request.talkHistorys.push($scope.requestListDetails[requIndex].talkHistorys[reqTalkIndex]);
+                            }
+                        }
+                    }
+                    request.isExpanded = true;
+                }
+                else
+                    request.isExpanded = false;
+            }
+            $scope.RequestStatus = 'All';    // 'request_head';  for all type request
+
+            $scope.ShowType = function (type) {
+                $scope.RequestStatus = type;
+            }
+        })
+        .filter('requestTypeFilter', function () {
+            return function (requestList, status) {
+
+                if (status == 'All')
+                    return requestList;
+
+                var remain = new Array();
+                for (var requIndex in requestList) {
+                    //'Completed' 'In progress' 'Pending'
+                    if (requestList[requIndex].status.toLowerCase() == status.toLowerCase()) {
+                        remain.push(requestList[requIndex]);
+                    }
+                }
+                return remain;
+            }
+        });
+
+
+        angular.element(document).ready(function () {
+            var myDiv2 = document.getElementById("myRequestPage");
+            angular.bootstrap(myDiv2, ["myRequest"]);
+        });
+    </script>
+    <title>Marriot</title>
+</head>
+<body>
+    <div class="page-wrap" id="myRequestPage" ng-controller="RequestsCtrl">
+        <header class="header">
+            <div class="header_inner">
+                <h1 class="logo">
+                    <a href="/index.html">JW MARRIOTT.<br>Absheron<br>Baku</a>
+                </h1>
+                <div class="location-info">
+                    <span>
+						<big>Inside</big><br>
+						the hotel
+					</span>
+                </div>
+                <div class="main-navigation">
+                    <ul>
+                        <li><a href="/index.html">Make request</a></li>
+                        <li class="__active"><a href="#">My request</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <div class="page">
+            <div class="page-panel" ng-switch="RequestStatus">
+                <div ng-switch-when="All">
+                    <ul class="filter-navigation">
+                        <li class="__active" ng-click="ShowType('All')"><a href="#">All Request</a></li>
+                        <li><a href="#" ng-click="ShowType('Pending')">Pending</a></li>
+                        <li><a href="#" ng-click="ShowType('In Progress')">In Progress</a></li>
+                        <li><a href="#" ng-click="ShowType('Completed')">Completed</a></li>
+                    </ul>
+                </div>
+                <div ng-switch-when="Pending">
+                    <ul class="filter-navigation">
+                        <li><a href="#" ng-click="ShowType('All')">All Request</a></li>
+                        <li class="__active"><a href="#" ng-click="ShowType('Pending')">Pending</a></li>
+                        <li><a href="#" ng-click="ShowType('In Progress')">In Progress</a></li>
+                        <li><a href="#" ng-click="ShowType('Completed')">Completed</a></li>
+                    </ul>
+                </div>
+                <div ng-switch-when="In Progress">
+                    <ul class="filter-navigation">
+                        <li><a href="#" ng-click="ShowType('All')">All Request</a></li>
+                        <li><a href="#" ng-click="ShowType('Pending')">Pending</a></li>
+                        <li class="__active"><a href="#" ng-click="ShowType('In Progress')">In Progress</a></li>
+                        <li><a href="#" ng-click="ShowType('Completed')">Completed</a></li>
+                    </ul>
+                </div>
+                <div ng-switch-when="Completed">
+                    <ul class="filter-navigation">
+                        <li><a href="#" ng-click="ShowType('All')">All Request</a></li>
+                        <li><a href="#" ng-click="ShowType('Pending')">Pending</a></li>
+                        <li><a href="#" ng-click="ShowType('In Progress')">In Progress</a></li>
+                        <li class="__active"><a href="#" ng-click="ShowType('Completed')">Completed</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="page_inner">
+                <div class="requests">
+                    <div class="requests_inner">
+                        <ul class="list">
+                            <li ng-repeat="request in requestList|requestTypeFilter:RequestStatus">
+                                <div ng-switch="request.status">
+                                    <div ng-switch-when="Pending" style="cursor:pointer" ng-click="ShowDetails(request)">
+                                        <div class='request __pending'>
+                                            <div ng-class="((request.isExpanded) && ('request_head __show') || ('request_head'))">
+                                                <div class="request_title ">
+                                                    <div class="request_name">
+                                                        <div class="field">
+                                                            <div class="field-checkbox">
+                                                                <input type="checkbox" name="request" disabled id="book-meeting-room-{{request.id}}" value="BookAmeetingRoom">
+                                                                <label for="book-meeting-room-{{request.id}}"><span class="icon __checkbox"></span>{{request.name}}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="request_status" ng-class="">{{request.status}}</div>
+                                                </div>
+                                                <ul class="request_info">
+                                                    <li class="comments_count" ng-hide="request.number==0"><span class="number">{{request.number}}</span></li>
+                                                    <li class="time"><time>{{request.sendTime}}</time></li>
+                                                    <li class="visibility-controller"><a class="icon __white-arrow" id="{{request.id}}" href="#"></a></li>  <!--/Data/{{request.id}}-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-switch-when="In progress" style="cursor:pointer" ng-click="ShowDetails(request)">
+                                        <div class='request __in-progress'>
+                                            <div ng-class="((request.isExpanded) && ('request_head __show') || ('request_head'))">
+                                                <div class="request_title ">
+                                                    <div class="request_name">
+                                                        <div class="field">
+                                                            <div class="field-checkbox">
+                                                                <input type="checkbox" name="request" disabled id="Checkbox1" value="BookAmeetingRoom">
+                                                                <label for="book-meeting-room-{{request.id}}"><span class="icon __checkbox"></span>{{request.name}}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="request_status" ng-class="">{{request.status}}</div>
+                                                </div>
+                                                <ul class="request_info">
+                                                    <li class="comments_count" ng-hide="request.number==0"><span class="number">{{request.number}}</span></li>
+                                                    <li class="time"><time>{{request.sendTime}}</time></li>
+                                                    <li class="visibility-controller"><a class="icon __white-arrow" id="A1" href="#"></a></li>  <!--/Data/{{request.id}}-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-switch-when="Completed" style="cursor:pointer" ng-click="ShowDetails(request)">
+                                        <div class='request __completed'>
+                                            <div ng-class="((request.isExpanded) && ('request_head __show') || ('request_head'))">
+                                                <div class="request_title ">
+                                                    <div class="request_name">
+                                                        <div class="field">
+                                                            <div class="field-checkbox">
+                                                                <input type="checkbox" checked="checked" disabled name="request" id="Checkbox2" value="BookAmeetingRoom">
+                                                                <label for="book-meeting-room-{{request.id}}"><span class="icon __checkbox"></span>{{request.name}}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="request_status" ng-class="">{{request.status}}</div>
+                                                </div>
+                                                <ul class="request_info">
+                                                    <li class="comments_count" ng-hide="request.number==0"><span class="number">{{request.number}}</span></li>
+                                                    <li class="time"><time>{{request.sendTime}}</time></li>
+                                                    <li class="visibility-controller"><a class="icon __white-arrow" id="A2" href="#" ></a></li>  <!--/Data/{{request.id}}-->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="request_body"  ng-class="((request.isExpanded) && ('request_body') || ('request_body __hide'))">
+                                    <div class="request_data">                                        
+                                            <ul>
+                                                <li ng-repeat="requestDetail in request.requestDetails">
+                                                    <h5>{{requestDetail.servName}}</h5>
+                                                    <p>{{requestDetail.servText}}</p>
+                                                </li>
+                                            </ul>
+                                            <div class="request_content">
+                                                <ul class="comments">
+                                                    <li class="comment" ng-repeat="item in request.talkHistorys">
+                                                        <div class="comment_info" ng-switch="item.author">
+                                                            <div ng-switch-when="Me">
+                                                                <div class="__user">
+                                                                    <time>{{item.time}}</time><span class="comma">, </span><span class="author">{{item.author}}</span><span class="colon">:</span>
+                                                                </div>
+                                                            </div>
+                                                            <div ng-switch-when="Operator">
+                                                                <div class="__operator">
+                                                                    <time>{{item.time}}</time><span class="comma">, </span><span class="author">{{item.author}}</span><span class="colon">:</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="message html_format">
+                                                            <p>{{item.told}}</p>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <form class="message_form">
+                                                    <div class="field">
+                                                        <input type="text" class="message-field">
+                                                        <button class="button __big __white-grey">Send Message to Operator</button>
+                                                    </div>
+                                                </form>
+                                            </div>                                       
+                                     </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+    <footer class="footer">
+        <div class="footer_inner">
+            <div class="footer_navigation">
+                <ul>
+                    <li class="__personal">
+                        <a class="popup-controller" href="/InsideAYS/preferences.html">
+                            <span>personal Preferences</span>
+                        </a>
+                    </li>
+                    <li class="__switch">
+                        <a href="/OutsideAYS/main.html">
+                            <span>switch to outside AYs</span>
+                        </a>
+                    </li>
+                    <li class="__emergency">
+                        <a href="javascript:void(0)">Emergency button</a>
+                        <ul class="sub-menu">
+                            <li><a class="popup-controller" href="/InsideAYS/doctor-service.html">Medical service</a></li>
+                            <li><a href="#">Call operator</a></li>
+                            <li><a href="#">Help me, i’m lost</a></li>
+                            <li><a href="/report-to-manager.html">Report to Manager on Duty</a></li>
+                            <li><a href="/report-to-manager.html">Report to General Manager</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <link rel="stylesheet" href="/Content/styles.css">
+    <link rel="stylesheet" href="/Content/core-ui-select.css">
+    <link rel="stylesheet" href="/Content/jquery.timepicker.css">
+    <link rel="stylesheet" href="/Content/jquery.scrollpane.css">
+    <link rel="stylesheet" href="/Content/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/Content/jquery.fancybox.css">
+    <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,500,700">
+
+    <script src="/javascript/jquery-1.11.0.min.js"></script>
+    <script src="/javascript/jquery.timepicker.js"></script>
+    <script src="/javascript/bootstrap-datepicker.js"></script>
+    <script src="/javascript/jquery.fancybox.js"></script>
+    <script src="/javascript/jquery.fancybox.pack.js"></script>
+    <script src="/javascript/jquery.core-ui-select.js"></script>
+    <script src="/javascript/scripts.js"></script>
+</body>
+</html>

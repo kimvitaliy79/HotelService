@@ -1,0 +1,40 @@
+
+<script type="text/javascript"> 
+
+    angular.module('successMessage', []).controller("SuccessMsgCtrl",
+       function ($scope) {
+
+           $scope.close = function ()
+           {
+               $.fancybox.close();
+           }          
+       }) 
+
+    angular.element(document).ready(function () {
+        angular.bootstrap(document.getElementById('successMsg'), ['successMessage']);
+
+    });
+    
+    //@ sourceURL=successMsg.js 
+</script> 
+
+  <div class="ui-popup __style-4" id="successMsg" ng-controller="SuccessMsgCtrl">
+	<div class="ui-popup_inner">
+		<div class="ui-popup_head __style-1">
+			<h4>Thank you for your request</h4>
+		</div>
+		<div class="ui-popup_body">
+			<form action="#">
+				<article class="entry __aligner">
+				<p>At your Service <br>
+					will take care of it
+				</p>
+				</article>
+				<div class="button-inline __alinger">
+					<button class="button __black __medium" type="button" ng-click="close()">Done</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+	<!--<div class="overlay"></div>-->
